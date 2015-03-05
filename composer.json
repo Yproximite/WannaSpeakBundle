@@ -1,0 +1,30 @@
+{
+    "name": "yproximite/wanna-speak-bundle",
+    "description": "Access to WannaSpeak API",
+    "keywords": ["statistics", "call", "tracking", "rank"],
+    "homepage": "https://github.com/Yproximite/WannaSpeakBundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jean-Baptiste Blanchon",
+            "email": "jean-baptiste@yproximite.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/config": ">=2.1",
+        "symfony/http-kernel": ">=2.1",
+        "symfony/dependency-injection": ">=2.1",
+        "misd/guzzle-bundle": "1.1.*@dev"
+    },
+    "autoload": {
+        "psr-4": { "Yproximite\\WannaSpeakBundle\\": "" }
+    },
+    "minimum-stability": "stable",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
