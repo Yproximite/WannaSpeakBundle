@@ -35,6 +35,6 @@ class WannaSpeakExtension extends Extension
 
         $container->setParameter('wanna_speak.api.account_id', $config['api']['credentials']['account_id']);
         $container->setParameter('wanna_speak.api.secret_key', $config['api']['credentials']['secret_key']);
-        $container->setParameter('wanna_speak.api.base_url', $config['api']['credentials']['base_url']);
+        $container->setParameter('wanna_speak.api.base_url', $config['api']['base_url']);
     }
 }

@@ -4,10 +4,12 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>
-    </parameters>
-
     <services>
-        
+        <service id="wanna_speak.api.statistics" class="Yproximite\WannaSpeakBundle\Api\Statistics">
+            <argument type="service" id="my_poseo.main.guzzle.client"/>
+            <argument>%wanna_speak.api.account_id%</argument>
+            <argument>%wanna_speak.api.secret_key%</argument>
+            <argument>%wanna_speak.api.base_url%</argument>
+        </service>
     </services>
 </container>

@@ -22,7 +22,7 @@ class Statistics
     const API_BASE_PARAMETER  = 'stat';
 
     /**
-     * @var $client Client
+     * @var Client $client
      */
     private $client;
 
@@ -37,36 +37,31 @@ class Statistics
     protected $secretKey;
 
     /**
-     * __construct
+     * @var string $baseUrl
      */
-    public function __construct()
-    {
-        $this->client = new Client();
-    }
+    protected $baseUrl;
 
     /**
-     * @param string $accountId
-     * @param string $secretKey
+     * __construct
      */
-    public function setCredentials($accountId, $secretKey)
+    public function __construct(Client $client, $accountId, $secretKey, $baseUrl)
     {
+        $this->client    = new Client();
         $this->accountId = $accountId;
         $this->secretKey = $secretKey;
+        $this->baseUrl   = $baseUrl;
     }
 
     /**
      * Return your Authentication key
      *
-     * @param string $accountId
-     * @param string $accountKey
-     *
      * @return string
      */
-    protected function getAuthKey($accountId, $accountKey)
+    protected function getAuthKey()
     {
         $timeStamp = time();
 
-        return $timeStamp . '-' . md5($accountId . $timeStamp . $accountKey);
+        return $timeStamp . '-' . md5($this->accountId . $timeStamp . $this->secretKey);
     }
 
     /**
@@ -81,9 +76,64 @@ class Statistics
     public function processResponse(Response $response)
     {
         $data = $response->json();
+
         if (isset($data['status']) && $data['status'] != "success") {
             throw new \Exception('WannaSpeak API: ' . $data['message']);
         }
+
         return $data;
+    }
+
+    public function getBase()
+    {
+        $request = $this->client->createRequest(self::DEFAULT_METHOD_POST, $this->baseUrl);
+
+        $query = $request->getQuery();
+
+        $query->set('api', self::API_BASE_PARAMETER);
+        $query->set('id', $this->accountId);
+
+        $query->set('method', 'did');
+        $query->set('key', $this->getAuthKey());
+        $query->set('date', '2015-01-01');
+        $query->set('fake', '1');
+
+        $response = $this->client->send($request);
+
+        $data     = $this->processResponse($response);
+
+        return $data;
+    }
+
+    /**
+     * @param string $secretKey
+     */
+    public function setSecretKey($secretKey)
+    {
+        $this->secretKey = $secretKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSecretKey()
+    {
+        return $this->secretKey;
+    }
+
+    /**
+     * @param string $accountId
+     */
+    public function setAccountId($accountId)
+    {
+        $this->accountId = $accountId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountId()
+    {
+        return $this->accountId;
     }
 }
