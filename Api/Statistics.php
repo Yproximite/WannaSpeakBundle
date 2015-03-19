@@ -19,10 +19,11 @@ use Guzzle\Http\Message\Response;
 class Statistics
 {
     const DEFAULT_METHOD_POST = 'POST';
-    const API_BASE_PARAMETER  = 'stat';
+    const API_BASE_STAT_PARAMETER  = 'stat';
+    const API_BASE_CT_PARAMETER  = 'ct';
 
     /**
-     * @var Client $client
+     * @var $client Client
      */
     private $client;
 
@@ -42,6 +43,11 @@ class Statistics
     protected $baseUrl;
 
     /**
+     * @var Request $request
+     */
+    protected $request;
+
+    /**
      * __construct
      */
     public function __construct(Client $client, $accountId, $secretKey, $baseUrl)
@@ -50,6 +56,32 @@ class Statistics
         $this->accountId = $accountId;
         $this->secretKey = $secretKey;
         $this->baseUrl   = $baseUrl;
+    }
+
+    protected function buildDefaultQuery($api)
+    {
+        $this->request = $this->client->createRequest(self::DEFAULT_METHOD_POST, $this->baseUrl);
+
+        $query = $this->request->getQuery();
+
+        $query->set('api', $api);
+        $query->set('id', $this->accountId);
+        $query->set('key', $this->getAuthKey());
+
+        return $query;
+    }
+
+    public function getNumbers($type)
+    {
+        $query = $this->buildDefaultQuery(self::API_BASE_CT_PARAMETER);
+
+        $query->set('method', $type);
+
+        $response = $this->client->send($this->request);
+
+        $data = $this->processResponse($response);
+
+        return $data['data']['dids'];
     }
 
     /**
@@ -76,64 +108,136 @@ class Statistics
     public function processResponse(Response $response)
     {
         $data = $response->json();
-
-        if (isset($data['status']) && $data['status'] != "success") {
-            throw new \Exception('WannaSpeak API: ' . $data['message']);
+        if ($data['error']) {
+            throw new \Exception('WannaSpeak API: ' . $data['error']['txt']);
         }
 
         return $data;
     }
 
-    public function getBase()
+    /**
+     * We store the platformId in tag1
+     *          and siteId     in tag2
+     *
+     * @param string $method
+     * @param string $name
+     * @param string $phoneDest
+     * @param string $phoneDid
+     * @param string $platformId
+     * @param string $siteId
+     *
+     * @return array
+     */
+    public function callTracking($method, $name, $phoneDest, $phoneDid, $platformId, $siteId)
     {
-        $request = $this->client->createRequest(self::DEFAULT_METHOD_POST, $this->baseUrl);
+        $query = $this->buildDefaultQuery(self::API_BASE_CT_PARAMETER);
 
-        $query = $request->getQuery();
+        $query->set('method', $method);
 
-        $query->set('api', self::API_BASE_PARAMETER);
-        $query->set('id', $this->accountId);
+        $query->set('destination', $phoneDest);
+        $query->set('tag1', $platformId);
+        $query->set('tag2', $siteId);
+        $query->set('did', $phoneDid);
+        $query->set('name', $name);
 
-        $query->set('method', 'did');
-        $query->set('key', $this->getAuthKey());
-        $query->set('date', '2015-01-01');
-        $query->set('fake', '1');
+        $response = $this->client->send($this->request);
 
-        $response = $this->client->send($request);
-
-        $data     = $this->processResponse($response);
+        $data = $this->processResponse($response);
 
         return $data;
     }
 
     /**
-     * @param string $secretKey
+     * Will fetch all datas from your account
+     * from $beginDate to $endDate
+     *
+     * if there are no dates, the API's default behaviour will return
+     * today's calls. we provide defaults dates in order to have all
+     * calls from the begining of the time to now
+     *
+     * @param \DateTime $beginDate
+     * @param \DateTime $endDate
+     *
+     * @return array
      */
-    public function setSecretKey($secretKey)
+    public function getAllStats(\DateTime $beginDate = null, \DateTime $endDate = null)
     {
-        $this->secretKey = $secretKey;
+        if (!$beginDate) {
+            $beginDate = new \DateTime('01-01-2015');
+        }
+
+        if (!$endDate) {
+            $endDate = new \DateTime('NOW');
+        }
+
+        $query = $this->buildDefaultQuery(self::API_BASE_STAT_PARAMETER);
+
+        $query->set('method', 'did');
+        $query->set('starttime', $beginDate->format('Y-m-d H:i:s'));
+        $query->set('stoptime', $endDate->format('Y-m-d H:i:s'));
+
+        $response = $this->client->send($this->request);
+
+        $data = $this->processResponse($response);
+
+        return $data;
     }
 
     /**
-     * @return string
+     * Will fetch all datas from your account
+     * from $beginDate to $endDate
+     *
+     * if there are no dates, the API's default behaviour will return
+     * today's calls. we provide defaults dates in order to have all
+     * calls from the begining of the time to now
+     *
+     * @param string    $siteId
+     * @param \DateTime $beginDate
+     * @param \DateTime $endDate
+     *
+     * @return array
      */
-    public function getSecretKey()
+    public function getStatsBySite($siteId, \DateTime $beginDate = null, \DateTime $endDate = null)
     {
-        return $this->secretKey;
+        if (!$beginDate) {
+            $beginDate = new \DateTime('01-01-2015');
+        }
+
+        if (!$endDate) {
+            $endDate = new \DateTime('NOW');
+        }
+
+        $query = $this->buildDefaultQuery(self::API_BASE_STAT_PARAMETER);
+
+        $query->set('method', 'did');
+        $query->set('nodid', '1');
+        $query->set('tag2', $siteId);
+        $query->set('starttime', $beginDate->format('Y-m-d 00:00:00'));
+        $query->set('stoptime', $endDate->format('Y-m-d 23:59:59'));
+
+        $response = $this->client->send($this->request);
+
+        $data = $this->processResponse($response);
+        return $data;
     }
 
     /**
-     * @param string $accountId
+     *
+     * @param string $didPhone
+     *
+     * @return array
      */
-    public function setAccountId($accountId)
+    public function callTrackingDelete($didPhone)
     {
-        $this->accountId = $accountId;
-    }
+        $query = $this->buildDefaultQuery(self::API_BASE_CT_PARAMETER);
 
-    /**
-     * @return string
-     */
-    public function getAccountId()
-    {
-        return $this->accountId;
+        $query->set('method', 'delete');
+        $query->set('did', $didPhone);
+
+        $response = $this->client->send($this->request);
+
+        $data = $this->processResponse($response);
+
+        return $data;
     }
 }
