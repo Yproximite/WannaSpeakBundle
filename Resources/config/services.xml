@@ -6,7 +6,7 @@
 
     <services>
         <service id="wanna_speak.api.statistics" class="Yproximite\WannaSpeakBundle\Api\Statistics">
-            <argument type="service" id="my_poseo.main.guzzle.client"/>
+            <argument type="service" id="guzzle.client"/>
             <argument>%wanna_speak.api.account_id%</argument>
             <argument>%wanna_speak.api.secret_key%</argument>
             <argument>%wanna_speak.api.base_url%</argument>
