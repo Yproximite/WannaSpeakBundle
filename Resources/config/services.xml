@@ -14,6 +14,7 @@
             <argument>%wanna_speak.api.account_id%</argument>
             <argument>%wanna_speak.api.secret_key%</argument>
             <argument>%wanna_speak.api.base_url%</argument>
+            <argument>%wanna_speak.api.test%</argument>
         </service>
 
         <service id="wanna_speak.main.guzzle.client" class="%guzzle.client.class%">

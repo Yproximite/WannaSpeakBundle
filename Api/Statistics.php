@@ -43,6 +43,11 @@ class Statistics
     protected $baseUrl;
 
     /**
+     * @var bool $test
+     */
+    protected $test;
+
+    /**
      * @var Request $request
      */
     protected $request;
@@ -50,12 +55,13 @@ class Statistics
     /**
      * __construct
      */
-    public function __construct(Client $client, $accountId, $secretKey, $baseUrl)
+    public function __construct(Client $client, $accountId, $secretKey, $baseUrl, $test)
     {
         $this->client    = new Client();
         $this->accountId = $accountId;
         $this->secretKey = $secretKey;
         $this->baseUrl   = $baseUrl;
+        $this->test      = $test;
     }
 
     protected function buildDefaultQuery($api)
@@ -76,7 +82,6 @@ class Statistics
         $query = $this->buildDefaultQuery(self::API_BASE_CT_PARAMETER);
 
         $query->set('method', $type);
-
         $response = $this->client->send($this->request);
 
         $data = $this->processResponse($response);
@@ -108,6 +113,7 @@ class Statistics
     public function processResponse(Response $response)
     {
         $data = $response->json();
+
         if ($data['error']) {
             throw new \Exception('WannaSpeak API: ' . $data['error']['txt']);
         }
@@ -140,7 +146,7 @@ class Statistics
         $query->set('did', $phoneDid);
         $query->set('name', $name);
 
-        $response = $this->client->send($this->request);
+        $response = $this->sendRequest();
 
         $data = $this->processResponse($response);
 
@@ -176,7 +182,7 @@ class Statistics
         $query->set('starttime', $beginDate->format('Y-m-d H:i:s'));
         $query->set('stoptime', $endDate->format('Y-m-d H:i:s'));
 
-        $response = $this->client->send($this->request);
+        $response = $this->sendRequest();
 
         $data = $this->processResponse($response);
 
@@ -215,7 +221,7 @@ class Statistics
         $query->set('starttime', $beginDate->format('Y-m-d 00:00:00'));
         $query->set('stoptime', $endDate->format('Y-m-d 23:59:59'));
 
-        $response = $this->client->send($this->request);
+        $response = $this->sendRequest();
 
         $data = $this->processResponse($response);
         return $data;
@@ -234,10 +240,29 @@ class Statistics
         $query->set('method', 'delete');
         $query->set('did', $didPhone);
 
-        $response = $this->client->send($this->request);
+        $response = $this->sendRequest();
 
         $data = $this->processResponse($response);
 
+        $this->sendRequest();
+
         return $data;
+    }
+
+    /**
+     * @return array|Response|null
+     */
+    protected function sendRequest()
+    {
+        if (!$this->test) {
+            $response = $this->client->send($this->request);
+        } else {
+            $response = new Response(200);
+            $datas = ['error' => ['txt' => 'You are in dev env, the API has not been called, try modify your configuration if you are sure...']];
+            $jsonData = json_encode($datas);
+            $response->setBody($jsonData);
+        }
+
+        return $response;
     }
 }
