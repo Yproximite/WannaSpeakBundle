@@ -10,6 +10,7 @@ namespace Yproximite\WannaSpeakBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
@@ -37,5 +38,9 @@ class WannaSpeakExtension extends Extension
         $container->setParameter('wanna_speak.api.secret_key', $config['api']['credentials']['secret_key']);
         $container->setParameter('wanna_speak.api.base_url', $config['api']['base_url']);
         $container->setParameter('wanna_speak.api.test', $config['api']['test']);
+
+        if (!empty($config['http_client'])) {
+            $container->getDefinition('wanna_speak.api.statistics')->replaceArgument(4, new Reference($config['http_client']));
+        }
     }
 }

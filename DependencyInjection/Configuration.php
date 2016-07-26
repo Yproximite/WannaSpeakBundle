@@ -39,6 +39,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('test')->defaultValue(false)
                     ->end()
                 ->end()
+                ->scalarNode('http_client')->end()
             ->end();
 
         return $treeBuilder;

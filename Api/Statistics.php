@@ -8,8 +8,12 @@
 
 namespace Yproximite\WannaSpeakBundle\Api;
 
-use Guzzle\Http\Client;
-use Guzzle\Http\Message\Response;
+use Http\Client\HttpClient;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Http\Discovery\HttpClientDiscovery;
+use Http\Discovery\MessageFactoryDiscovery;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class Statistics
@@ -18,14 +22,14 @@ use Guzzle\Http\Message\Response;
  */
 class Statistics
 {
-    const DEFAULT_METHOD_POST = 'POST';
-    const API_BASE_STAT_PARAMETER  = 'stat';
-    const API_BASE_CT_PARAMETER  = 'ct';
+    const DEFAULT_METHOD_POST     = 'POST';
+    const API_BASE_STAT_PARAMETER = 'stat';
+    const API_BASE_CT_PARAMETER   = 'ct';
 
     /**
-     * @var $client Client
+     * @var $httpClient HttpClient
      */
-    private $client;
+    private $httpClient;
 
     /**
      * @var string $accountId
@@ -48,43 +52,55 @@ class Statistics
     protected $test;
 
     /**
-     * @var Request $request
+     * __construct
+     *
+     * @param HttpClient $httpClient
+     * @param string $accountId
+     * @param string $secretKey
+     * @param string $baseUrl
+     * @param bool   $test
      */
-    protected $request;
+    public function __construct(HttpClient $httpClient, $accountId, $secretKey, $baseUrl, $test)
+    {
+        $this->httpClient = $httpClient;
+        $this->accountId  = $accountId;
+        $this->secretKey  = $secretKey;
+        $this->baseUrl    = $baseUrl;
+        $this->test       = $test;
+    }
 
     /**
-     * __construct
+     * @param array $headers
+     *
+     * @return ResponseInterface
      */
-    public function __construct(Client $client, $accountId, $secretKey, $baseUrl, $test)
+    protected function createAndSendRequest($headers)
     {
-        $this->client    = new Client();
-        $this->accountId = $accountId;
-        $this->secretKey = $secretKey;
-        $this->baseUrl   = $baseUrl;
-        $this->test      = $test;
+        $request = MessageFactoryDiscovery::find()->createRequest(self::DEFAULT_METHOD_POST, $this->baseUrl, $headers);
+
+        return $this->sendRequest($request);
     }
 
-    protected function buildDefaultQuery($api)
+    /**
+     * @param string $method
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function getNumbers($method)
     {
-        $this->request = $this->client->createRequest(self::DEFAULT_METHOD_POST, $this->baseUrl);
+        $headers = [
+            'query' => [
+                'api'    => self::API_BASE_CT_PARAMETER,
+                'id'     => $this->accountId,
+                'key'    => $this->getAuthKey(),
+                'method' => $method,
+            ]
+        ];
 
-        $query = $this->request->getQuery();
-
-        $query->set('api', $api);
-        $query->set('id', $this->accountId);
-        $query->set('key', $this->getAuthKey());
-
-        return $query;
-    }
-
-    public function getNumbers($type)
-    {
-        $query = $this->buildDefaultQuery(self::API_BASE_CT_PARAMETER);
-
-        $query->set('method', $type);
-        $response = $this->client->send($this->request);
-
-        $data = $this->processResponse($response);
+        $response = $this->createAndSendRequest($headers);
+        $data     = $this->processResponse($response);
 
         return $data['data']['dids'];
     }
@@ -104,15 +120,15 @@ class Statistics
     /**
      * Process the API response, provides error handling
      *
-     * @param Response $response The guzzle response
+     * @param ResponseInterface $response
      *
      * @throws \Exception
      *
      * @return array
      */
-    public function processResponse(Response $response)
+    public function processResponse(ResponseInterface $response)
     {
-        $data = $response->json();
+        $data = json_encode($response);
 
         if ($data['error']) {
             throw new \Exception('WannaSpeak API: ' . $data['error']['txt']);
@@ -136,19 +152,22 @@ class Statistics
      */
     public function callTracking($method, $name, $phoneDest, $phoneDid, $platformId, $siteId)
     {
-        $query = $this->buildDefaultQuery(self::API_BASE_CT_PARAMETER);
+        $headers = [
+            'query' => [
+                'api'         => self::API_BASE_CT_PARAMETER,
+                'id'          => $this->accountId,
+                'key'         => $this->getAuthKey(),
+                'method'      => $method,
+                'destination' => $phoneDest,
+                'tag1'        => $platformId,
+                'tag2'        => $siteId,
+                'did'         => $phoneDid,
+                'name'        => $name,
+            ],
+        ];
 
-        $query->set('method', $method);
-
-        $query->set('destination', $phoneDest);
-        $query->set('tag1', $platformId);
-        $query->set('tag2', $siteId);
-        $query->set('did', $phoneDid);
-        $query->set('name', $name);
-
-        $response = $this->sendRequest();
-
-        $data = $this->processResponse($response);
+        $response = $this->createAndSendRequest($headers);
+        $data     = $this->processResponse($response);
 
         return $data;
     }
@@ -176,15 +195,19 @@ class Statistics
             $endDate = new \DateTime('NOW');
         }
 
-        $query = $this->buildDefaultQuery(self::API_BASE_STAT_PARAMETER);
+        $headers = [
+            'query' => [
+                'api'       => self::API_BASE_STAT_PARAMETER,
+                'id'        => $this->accountId,
+                'key'       => $this->getAuthKey(),
+                'method'    => 'did',
+                'starttime' => $beginDate->format('Y-m-d H:i:s'),
+                'stoptime'  => $endDate->format('Y-m-d H:i:s'),
+            ],
+        ];
 
-        $query->set('method', 'did');
-        $query->set('starttime', $beginDate->format('Y-m-d H:i:s'));
-        $query->set('stoptime', $endDate->format('Y-m-d H:i:s'));
-
-        $response = $this->sendRequest();
-
-        $data = $this->processResponse($response);
+        $response = $this->createAndSendRequest($headers);
+        $data     = $this->processResponse($response);
 
         return $data;
     }
@@ -213,17 +236,22 @@ class Statistics
             $endDate = new \DateTime('NOW');
         }
 
-        $query = $this->buildDefaultQuery(self::API_BASE_STAT_PARAMETER);
+        $headers = [
+            'query' => [
+                'api'       => self::API_BASE_STAT_PARAMETER,
+                'id'        => $this->accountId,
+                'key'       => $this->getAuthKey(),
+                'method'    => 'did',
+                'nodid'     => '1',
+                'tag2'      => $siteId,
+                'starttime' => $beginDate->format('Y-m-d 00:00:00'),
+                'stoptime'  => $endDate->format('Y-m-d 23:59:59'),
+            ],
+        ];
 
-        $query->set('method', 'did');
-        $query->set('nodid', '1');
-        $query->set('tag2', $siteId);
-        $query->set('starttime', $beginDate->format('Y-m-d 00:00:00'));
-        $query->set('stoptime', $endDate->format('Y-m-d 23:59:59'));
+        $response = $this->createAndSendRequest($headers);
+        $data     = $this->processResponse($response);
 
-        $response = $this->sendRequest();
-
-        $data = $this->processResponse($response);
         return $data;
     }
 
@@ -235,34 +263,50 @@ class Statistics
      */
     public function callTrackingDelete($didPhone)
     {
-        $query = $this->buildDefaultQuery(self::API_BASE_CT_PARAMETER);
+        $headers = [
+            'query' => [
+                'api'    => self::API_BASE_CT_PARAMETER,
+                'id'     => $this->accountId,
+                'key'    => $this->getAuthKey(),
+                'method' => 'delete',
+                'did'    => $didPhone,
+            ],
+        ];
 
-        $query->set('method', 'delete');
-        $query->set('did', $didPhone);
-
-        $response = $this->sendRequest();
-
-        $data = $this->processResponse($response);
-
-        $this->sendRequest();
+        $response = $this->createAndSendRequest($headers);
+        $data     = $this->processResponse($response);
 
         return $data;
     }
 
     /**
+     * @param RequestInterface $request
+     *
      * @return array|Response|null
      */
-    protected function sendRequest()
+    protected function sendRequest($request)
     {
         if (!$this->test) {
-            $response = $this->client->send($this->request);
+            $response = $this->getHttpClient()->sendRequest($request);
         } else {
-            $response = new Response(200);
-            $datas = ['error' => ['txt' => 'You are in dev env, the API has not been called, try modify your configuration if you are sure...']];
-            $jsonData = json_encode($datas);
-            $response->setBody($jsonData);
+            $data     = ['error' => ['txt' => 'You are in dev env, the API has not been called, try modify your configuration if you are sure...']];
+            $jsonData = json_encode($data);
+            $response = new Response($jsonData, 200);
         }
 
         return $response;
+    }
+
+    /**
+     *
+     * @return HttpClient
+     */
+    protected function getHttpClient()
+    {
+        if ($this->httpClient === null) {
+            $this->httpClient = HttpClientDiscovery::find();
+        }
+
+        return $this->httpClient;
     }
 }

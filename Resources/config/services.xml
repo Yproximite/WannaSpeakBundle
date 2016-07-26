@@ -10,16 +10,11 @@
 
     <services>
         <service id="wanna_speak.api.statistics" class="Yproximite\WannaSpeakBundle\Api\Statistics">
-            <argument type="service" id="wanna_speak.main.guzzle.client"/>
             <argument>%wanna_speak.api.account_id%</argument>
             <argument>%wanna_speak.api.secret_key%</argument>
             <argument>%wanna_speak.api.base_url%</argument>
             <argument>%wanna_speak.api.test%</argument>
+            <argument>null</argument>
         </service>
-
-        <service id="wanna_speak.main.guzzle.client" class="%guzzle.client.class%">
-            <tag name="guzzle.client"/>
-        </service>
-
     </services>
 </container>
