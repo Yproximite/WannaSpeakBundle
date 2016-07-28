@@ -9,6 +9,7 @@
 namespace Yproximite\WannaSpeakBundle\Api;
 
 use Http\Client\HttpClient;
+use Http\Discovery\UriFactoryDiscovery;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Http\Discovery\HttpClientDiscovery;
@@ -54,31 +55,19 @@ class Statistics
     /**
      * __construct
      *
+     * @param string     $accountId
+     * @param string     $secretKey
+     * @param string     $baseUrl
+     * @param bool       $test
      * @param HttpClient $httpClient
-     * @param string $accountId
-     * @param string $secretKey
-     * @param string $baseUrl
-     * @param bool   $test
      */
-    public function __construct(HttpClient $httpClient, $accountId, $secretKey, $baseUrl, $test)
+    public function __construct($accountId, $secretKey, $baseUrl, $test, HttpClient $httpClient = null)
     {
         $this->httpClient = $httpClient;
         $this->accountId  = $accountId;
         $this->secretKey  = $secretKey;
         $this->baseUrl    = $baseUrl;
         $this->test       = $test;
-    }
-
-    /**
-     * @param array $headers
-     *
-     * @return ResponseInterface
-     */
-    protected function createAndSendRequest($headers)
-    {
-        $request = MessageFactoryDiscovery::find()->createRequest(self::DEFAULT_METHOD_POST, $this->baseUrl, $headers);
-
-        return $this->sendRequest($request);
     }
 
     /**
@@ -90,31 +79,17 @@ class Statistics
      */
     public function getNumbers($method)
     {
-        $headers = [
-            'query' => [
-                'api'    => self::API_BASE_CT_PARAMETER,
-                'id'     => $this->accountId,
-                'key'    => $this->getAuthKey(),
-                'method' => $method,
-            ]
+        $args = [
+            'api'    => self::API_BASE_CT_PARAMETER,
+            'id'     => $this->accountId,
+            'key'    => $this->getAuthKey(),
+            'method' => $method,
         ];
 
-        $response = $this->createAndSendRequest($headers);
+        $response = $this->createAndSendRequest($args);
         $data     = $this->processResponse($response);
 
         return $data['data']['dids'];
-    }
-
-    /**
-     * Return your Authentication key
-     *
-     * @return string
-     */
-    protected function getAuthKey()
-    {
-        $timeStamp = time();
-
-        return $timeStamp . '-' . md5($this->accountId . $timeStamp . $this->secretKey);
     }
 
     /**
@@ -128,10 +103,10 @@ class Statistics
      */
     public function processResponse(ResponseInterface $response)
     {
-        $data = json_encode($response);
+        $data = json_decode($response->getBody()->getContents(), true);
 
         if ($data['error']) {
-            throw new \Exception('WannaSpeak API: ' . $data['error']['txt']);
+            throw new \Exception('WannaSpeak API: '.$data['error']['txt']);
         }
 
         return $data;
@@ -152,21 +127,19 @@ class Statistics
      */
     public function callTracking($method, $name, $phoneDest, $phoneDid, $platformId, $siteId)
     {
-        $headers = [
-            'query' => [
-                'api'         => self::API_BASE_CT_PARAMETER,
-                'id'          => $this->accountId,
-                'key'         => $this->getAuthKey(),
-                'method'      => $method,
-                'destination' => $phoneDest,
-                'tag1'        => $platformId,
-                'tag2'        => $siteId,
-                'did'         => $phoneDid,
-                'name'        => $name,
-            ],
+        $args = [
+            'api'         => self::API_BASE_CT_PARAMETER,
+            'id'          => $this->accountId,
+            'key'         => $this->getAuthKey(),
+            'method'      => $method,
+            'destination' => $phoneDest,
+            'tag1'        => $platformId,
+            'tag2'        => $siteId,
+            'did'         => $phoneDid,
+            'name'        => $name,
         ];
 
-        $response = $this->createAndSendRequest($headers);
+        $response = $this->createAndSendRequest($args);
         $data     = $this->processResponse($response);
 
         return $data;
@@ -195,18 +168,16 @@ class Statistics
             $endDate = new \DateTime('NOW');
         }
 
-        $headers = [
-            'query' => [
-                'api'       => self::API_BASE_STAT_PARAMETER,
-                'id'        => $this->accountId,
-                'key'       => $this->getAuthKey(),
-                'method'    => 'did',
-                'starttime' => $beginDate->format('Y-m-d H:i:s'),
-                'stoptime'  => $endDate->format('Y-m-d H:i:s'),
-            ],
+        $args = [
+            'api'       => self::API_BASE_STAT_PARAMETER,
+            'id'        => $this->accountId,
+            'key'       => $this->getAuthKey(),
+            'method'    => 'did',
+            'starttime' => $beginDate->format('Y-m-d H:i:s'),
+            'stoptime'  => $endDate->format('Y-m-d H:i:s'),
         ];
 
-        $response = $this->createAndSendRequest($headers);
+        $response = $this->createAndSendRequest($args);
         $data     = $this->processResponse($response);
 
         return $data;
@@ -236,20 +207,18 @@ class Statistics
             $endDate = new \DateTime('NOW');
         }
 
-        $headers = [
-            'query' => [
-                'api'       => self::API_BASE_STAT_PARAMETER,
-                'id'        => $this->accountId,
-                'key'       => $this->getAuthKey(),
-                'method'    => 'did',
-                'nodid'     => '1',
-                'tag2'      => $siteId,
-                'starttime' => $beginDate->format('Y-m-d 00:00:00'),
-                'stoptime'  => $endDate->format('Y-m-d 23:59:59'),
-            ],
+        $args = [
+            'api'       => self::API_BASE_STAT_PARAMETER,
+            'id'        => $this->accountId,
+            'key'       => $this->getAuthKey(),
+            'method'    => 'did',
+            'nodid'     => '1',
+            'tag2'      => $siteId,
+            'starttime' => $beginDate->format('Y-m-d 00:00:00'),
+            'stoptime'  => $endDate->format('Y-m-d 23:59:59'),
         ];
 
-        $response = $this->createAndSendRequest($headers);
+        $response = $this->createAndSendRequest($args);
         $data     = $this->processResponse($response);
 
         return $data;
@@ -263,20 +232,32 @@ class Statistics
      */
     public function callTrackingDelete($didPhone)
     {
-        $headers = [
-            'query' => [
-                'api'    => self::API_BASE_CT_PARAMETER,
-                'id'     => $this->accountId,
-                'key'    => $this->getAuthKey(),
-                'method' => 'delete',
-                'did'    => $didPhone,
-            ],
+        $args = [
+            'api'    => self::API_BASE_CT_PARAMETER,
+            'id'     => $this->accountId,
+            'key'    => $this->getAuthKey(),
+            'method' => 'delete',
+            'did'    => $didPhone,
         ];
 
-        $response = $this->createAndSendRequest($headers);
+        $response = $this->createAndSendRequest($args);
         $data     = $this->processResponse($response);
 
         return $data;
+    }
+
+    /**
+     * @param array $args
+     *
+     * @return ResponseInterface
+     */
+    protected function createAndSendRequest($args)
+    {
+        $uri     = UriFactoryDiscovery::find()->createUri($this->baseUrl);
+        $uri     = $uri->withQuery(http_build_query($args));
+        $request = MessageFactoryDiscovery::find()->createRequest(self::DEFAULT_METHOD_POST, $uri);
+
+        return $this->sendRequest($request);
     }
 
     /**
@@ -308,5 +289,17 @@ class Statistics
         }
 
         return $this->httpClient;
+    }
+
+    /**
+     * Return your Authentication key
+     *
+     * @return string
+     */
+    protected function getAuthKey()
+    {
+        $timeStamp = time();
+
+        return $timeStamp.'-'.md5($this->accountId.$timeStamp.$this->secretKey);
     }
 }
