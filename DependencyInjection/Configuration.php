@@ -36,9 +36,10 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                         ->scalarNode('base_url')->info('Url Api endpoint')->isRequired()->end()
-                        ->scalarNode('test')->defaultValue(false)
+                        ->scalarNode('test')->defaultValue(false)->end()
                     ->end()
                 ->end()
+                ->scalarNode('http_client')
             ->end();
 
         return $treeBuilder;
