@@ -91,9 +91,8 @@ class WannaSpeakHttpClient
         if (!$this->test) {
             $response = $this->getHttpClient()->sendRequest($request);
         } else {
-            $data     = ['error' => ['txt' => 'You are in dev env, the API has not been called, try modify your configuration if you are sure...']];
-            $jsonData = json_encode($data);
-            $response = new Response($jsonData, 200);
+            $data     = json_encode(['error' => ['txt' => 'You are in dev env, the API has not been called, try modify your configuration if you are sure...']]);
+            $response = new Response($data, 200);
         }
 
         return $response;
