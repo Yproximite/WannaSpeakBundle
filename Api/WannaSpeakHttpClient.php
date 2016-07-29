@@ -66,7 +66,7 @@ class WannaSpeakHttpClient
     /**
      * @param array $args
      *
-     * @return Response
+     * @return ResponseInterface
      */
     public function createAndSendRequest($args)
     {
