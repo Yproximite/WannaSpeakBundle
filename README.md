@@ -4,7 +4,7 @@ Communicate with Wannaspeak API (http://fr.wannaspeak.com/)
 ## Installation
 
 ```bash
-composer require php-http/guzzle6-adapter yproximite/wanna-speak-bundle
+composer require yproximite/wanna-speak-bundle
 ```
 
 *Note: It's your responsibility to use one of [those adapters](https://packagist.org/providers/php-http/client-implementation)*
