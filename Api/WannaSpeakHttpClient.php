@@ -70,7 +70,7 @@ class WannaSpeakHttpClient
     public function createAndSendRequest($args)
     {
         $defaultArgs = [
-            'id'     => $this->accountId,
+            'id' => $this->accountId,
         ];
 
         $args    = array_merge($defaultArgs, $args);
