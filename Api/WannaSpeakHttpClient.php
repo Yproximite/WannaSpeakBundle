@@ -3,11 +3,11 @@
 namespace Yproximite\WannaSpeakBundle\Api;
 
 use Http\Client\HttpClient;
-use Http\Discovery\MessageFactoryDiscovery;
-use Http\Discovery\UriFactoryDiscovery;
 use Psr\Http\Message\RequestInterface;
+use Http\Discovery\UriFactoryDiscovery;
 use Http\Discovery\HttpClientDiscovery;
 use Psr\Http\Message\ResponseInterface;
+use Http\Discovery\MessageFactoryDiscovery;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
