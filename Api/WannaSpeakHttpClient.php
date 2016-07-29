@@ -3,12 +3,15 @@
 namespace Yproximite\WannaSpeakBundle\Api;
 
 use Http\Client\HttpClient;
+use Http\Client\Common\PluginClient;
 use Psr\Http\Message\RequestInterface;
 use Http\Discovery\UriFactoryDiscovery;
 use Http\Discovery\HttpClientDiscovery;
 use Psr\Http\Message\ResponseInterface;
+use Http\Message\Authentication\QueryParam;
 use Http\Discovery\MessageFactoryDiscovery;
 use Symfony\Component\HttpFoundation\Response;
+use Http\Client\Common\Plugin\AuthenticationPlugin;
 
 /**
  * Class WannaSpeakHttpClient
@@ -68,7 +71,6 @@ class WannaSpeakHttpClient
     {
         $defaultArgs = [
             'id'     => $this->accountId,
-            'key'    => $this->getAuthKey(),
         ];
 
         $args    = array_merge($defaultArgs, $args);
@@ -105,6 +107,10 @@ class WannaSpeakHttpClient
         if ($this->httpClient === null) {
             $this->httpClient = HttpClientDiscovery::find();
         }
+
+        $authentication       = new QueryParam(['key' => $this->getAuthKey()]);
+        $authenticationPlugin = new AuthenticationPlugin($authentication);
+        $this->httpClient     = new PluginClient($this->httpClient, [$authenticationPlugin]);
 
         return $this->httpClient;
     }
