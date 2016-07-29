@@ -34,6 +34,7 @@ wanna_speak:
             account_id: '9999999999'
             secret_key: '0000000000'
         base_url: https://www-2.wannaspeak.com/api/api.php
+        test: false
 
 ```
 
@@ -61,5 +62,6 @@ wanna_speak:
             account_id: '9999999999'
             secret_key: '0000000000'
         base_url: https://www-2.wannaspeak.com/api/api.php
+        test: false
     http_client: 'httplug.client'
 ```

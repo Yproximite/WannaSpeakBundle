@@ -59,13 +59,14 @@ class WannaSpeakHttpClient
         $this->accountId  = $accountId;
         $this->secretKey  = $secretKey;
         $this->baseUrl    = $baseUrl;
+        $this->test       = $test;
         $this->httpClient = $httpClient;
     }
 
     /**
      * @param array $args
      *
-     * @return ResponseInterface
+     * @return Response
      */
     public function createAndSendRequest($args)
     {

@@ -21,6 +21,11 @@ class Statistics
     const API_BASE_CT_PARAMETER   = 'ct';
 
     /**
+     * @var WannaSpeakHttpClient
+     */
+    private $httpClient;
+
+    /**
      * __construct
      *
      * @param WannaSpeakHttpClient $httpClient
