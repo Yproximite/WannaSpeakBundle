@@ -1,4 +1,4 @@
-# WannaspeakBundle
+# WannaSpeakBundle
 Communicate with Wannaspeak API (http://fr.wannaspeak.com/)
 
 ## Installation
@@ -28,8 +28,14 @@ wanna_speak:
 
 ```
 
+
 ## Choose HTTP client
 
 WannaSpeakBundle 2.0 is no longer coupled to Guzzle3. Thanks to [Httplug](http://docs.php-http.org/en/latest/index.html) you can now use any
-library to transport HTTP messages. We use [discovery](http://docs.php-http.org/en/latest/discovery.html) to automatically
-find an installed client.
+library to transport HTTP messages. You can rely on [discovery](http://docs.php-http.org/en/latest/discovery.html) to automatically
+find an installed client or you can provide a client service name to the configuration (see [HttplugBundle](https://github.com/php-http/HttplugBundle)). 
+
+``` yaml
+// app/config/config.yml:
+wanna_speak:
+    http_client: 'httplug.client'
