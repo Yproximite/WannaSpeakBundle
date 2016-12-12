@@ -150,6 +150,45 @@ class Statistics
      * today's calls. we provide defaults dates in order to have all
      * calls from the begining of the time to now
      *
+     * @param string    $platformId
+     * @param \DateTime $beginDate
+     * @param \DateTime $endDate
+     *
+     * @return array
+     */
+    public function getStatsByPlatform($platformId, \DateTime $beginDate = null, \DateTime $endDate = null)
+    {
+        if (!$beginDate) {
+            $beginDate = new \DateTime('01-01-2015');
+        }
+
+        if (!$endDate) {
+            $endDate = new \DateTime('NOW');
+        }
+
+        $args = [
+            'api'       => self::API_BASE_STAT_PARAMETER,
+            'method'    => 'did',
+            'nodid'     => '1',
+            'tag1'      => $platformId,
+            'starttime' => $beginDate->format('Y-m-d 00:00:00'),
+            'stoptime'  => $endDate->format('Y-m-d 23:59:59'),
+        ];
+
+        $response = $this->httpClient->createAndSendRequest($args);
+        $data     = $this->processResponse($response);
+
+        return $data;
+    }
+
+    /**
+     * Will fetch all datas from your account
+     * from $beginDate to $endDate
+     *
+     * if there are no dates, the API's default behaviour will return
+     * today's calls. we provide defaults dates in order to have all
+     * calls from the begining of the time to now
+     *
      * @param string    $siteId
      * @param \DateTime $beginDate
      * @param \DateTime $endDate
