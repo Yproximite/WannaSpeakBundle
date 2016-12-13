@@ -19,6 +19,7 @@ class Statistics
 {
     const API_BASE_STAT_PARAMETER = 'stat';
     const API_BASE_CT_PARAMETER   = 'ct';
+    const BEGIN_DATE              = '01-01-2015';
 
     /**
      * @var WannaSpeakHttpClient
@@ -122,7 +123,7 @@ class Statistics
     public function getAllStats(\DateTime $beginDate = null, \DateTime $endDate = null)
     {
         if (!$beginDate) {
-            $beginDate = new \DateTime('01-01-2015');
+            $beginDate = new \DateTime(self::BEGIN_DATE);
         }
 
         if (!$endDate) {
@@ -159,7 +160,7 @@ class Statistics
     public function getStatsByPlatform($platformId, \DateTime $beginDate = null, \DateTime $endDate = null)
     {
         if (!$beginDate) {
-            $beginDate = new \DateTime('01-01-2015');
+            $beginDate = new \DateTime(self::BEGIN_DATE);
         }
 
         if (!$endDate) {
@@ -198,7 +199,7 @@ class Statistics
     public function getStatsBySite($siteId, \DateTime $beginDate = null, \DateTime $endDate = null)
     {
         if (!$beginDate) {
-            $beginDate = new \DateTime('01-01-2015');
+            $beginDate = new \DateTime(self::BEGIN_DATE);
         }
 
         if (!$endDate) {
