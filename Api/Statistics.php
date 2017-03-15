@@ -243,13 +243,16 @@ class Statistics
     }
 
     /**
+     * @param int $link
+     *
      * @return array
      */
-    public function listSounds()
+    public function listSounds($link = 0)
     {
         $args = [
-            'api' => self::API_BASE_SOUND_PARAMETER,
-            'method' => 'available'
+            'api'    => self::API_BASE_SOUND_PARAMETER,
+            'method' => 'available',
+            'link'   => $link,
         ];
 
         $response = $this->httpClient->createAndSendRequest($args);
