@@ -17,9 +17,10 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Statistics
 {
-    const API_BASE_STAT_PARAMETER = 'stat';
-    const API_BASE_CT_PARAMETER   = 'ct';
-    const BEGIN_DATE              = '01-01-2015';
+    const API_BASE_STAT_PARAMETER  = 'stat';
+    const API_BASE_CT_PARAMETER    = 'ct';
+    const API_BASE_SOUND_PARAMETER = 'sound';
+    const BEGIN_DATE               = '01-01-2015';
 
     /**
      * @var WannaSpeakHttpClient
@@ -233,6 +234,22 @@ class Statistics
             'api'    => self::API_BASE_CT_PARAMETER,
             'method' => 'delete',
             'did'    => $didPhone,
+        ];
+
+        $response = $this->httpClient->createAndSendRequest($args);
+        $data     = $this->processResponse($response);
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function listSounds()
+    {
+        $args = [
+            'api' => self::API_BASE_SOUND_PARAMETER,
+            'method' => 'available'
         ];
 
         $response = $this->httpClient->createAndSendRequest($args);
