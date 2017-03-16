@@ -81,16 +81,18 @@ class Statistics
      * We store the platformId in tag1
      *          and siteId     in tag2
      *
-     * @param string $method
-     * @param string $name
-     * @param string $phoneDest
-     * @param string $phoneDid
-     * @param string $platformId
-     * @param string $siteId
+     * @param string      $method
+     * @param string      $name
+     * @param string      $phoneDest
+     * @param string      $phoneDid
+     * @param string      $platformId
+     * @param string      $siteId
+     * @param string|null $leg1
+     * @param string|null $leg2
      *
      * @return array
      */
-    public function callTracking($method, $name, $phoneDest, $phoneDid, $platformId, $siteId)
+    public function callTracking($method, $name, $phoneDest, $phoneDid, $platformId, $siteId, $leg1 = null, $leg2 = null)
     {
         $args = [
             'api'         => self::API_BASE_CT_PARAMETER,
@@ -101,6 +103,14 @@ class Statistics
             'did'         => $phoneDid,
             'name'        => $name,
         ];
+
+        if ($leg1 !== null) {
+            $args['leg1'] = $leg1;
+        }
+
+        if ($leg2 !== null) {
+            $args['leg2'] = $leg2;
+        }
 
         $response = $this->httpClient->createAndSendRequest($args);
         $data     = $this->processResponse($response);
