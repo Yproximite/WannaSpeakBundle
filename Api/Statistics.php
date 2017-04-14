@@ -98,7 +98,7 @@ class Statistics
             'destination' => $phoneDest,
             'tag1'        => $platformId,
             'tag2'        => $siteId,
-            'tag3'        => ($callerId === true) ? 'callerid:'.$phoneDest : '',
+            'tag3'        => ($callerId === true) ? 'callerid:'.$phoneDid : '',
             'did'         => $phoneDid,
             'name'        => $name,
         ];
