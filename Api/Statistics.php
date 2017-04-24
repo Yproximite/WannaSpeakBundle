@@ -87,12 +87,13 @@ class Statistics
      * @param string      $phoneDid
      * @param string      $platformId
      * @param string      $siteId
+     * @param bool        $callerId
      * @param string|null $leg1
      * @param string|null $leg2
      *
      * @return array
      */
-    public function callTracking($method, $name, $phoneDest, $phoneDid, $platformId, $siteId, $leg1 = null, $leg2 = null)
+    public function callTracking($method, $name, $phoneDest, $phoneDid, $platformId, $siteId, $callerId = false, $leg1 = null, $leg2 = null)
     {
         $args = [
             'api'         => self::API_BASE_CT_PARAMETER,
@@ -100,6 +101,7 @@ class Statistics
             'destination' => $phoneDest,
             'tag1'        => $platformId,
             'tag2'        => $siteId,
+            'tag3'        => ($callerId === true) ? 'callerid:'.$phoneDid : '',
             'did'         => $phoneDid,
             'name'        => $name,
         ];
