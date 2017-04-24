@@ -17,9 +17,10 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Statistics
 {
-    const API_BASE_STAT_PARAMETER = 'stat';
-    const API_BASE_CT_PARAMETER   = 'ct';
-    const BEGIN_DATE              = '01-01-2015';
+    const API_BASE_STAT_PARAMETER  = 'stat';
+    const API_BASE_CT_PARAMETER    = 'ct';
+    const API_BASE_SOUND_PARAMETER = 'sound';
+    const BEGIN_DATE               = '01-01-2015';
 
     /**
      * @var WannaSpeakHttpClient
@@ -80,17 +81,19 @@ class Statistics
      * We store the platformId in tag1
      *          and siteId     in tag2
      *
-     * @param string $method
-     * @param string $name
-     * @param string $phoneDest
-     * @param string $phoneDid
-     * @param string $platformId
-     * @param string $siteId
-     * @param bool   $callerId
+     * @param string      $method
+     * @param string      $name
+     * @param string      $phoneDest
+     * @param string      $phoneDid
+     * @param string      $platformId
+     * @param string      $siteId
+     * @param bool        $callerId
+     * @param string|null $leg1
+     * @param string|null $leg2
      *
      * @return array
      */
-    public function callTracking($method, $name, $phoneDest, $phoneDid, $platformId, $siteId, $callerId = false)
+    public function callTracking($method, $name, $phoneDest, $phoneDid, $platformId, $siteId, $callerId = false, $leg1 = null, $leg2 = null)
     {
         $args = [
             'api'         => self::API_BASE_CT_PARAMETER,
@@ -102,6 +105,14 @@ class Statistics
             'did'         => $phoneDid,
             'name'        => $name,
         ];
+
+        if ($leg1 !== null) {
+            $args['leg1'] = $leg1;
+        }
+
+        if ($leg2 !== null) {
+            $args['leg2'] = $leg2;
+        }
 
         $response = $this->httpClient->createAndSendRequest($args);
         $data     = $this->processResponse($response);
@@ -235,6 +246,25 @@ class Statistics
             'api'    => self::API_BASE_CT_PARAMETER,
             'method' => 'delete',
             'did'    => $didPhone,
+        ];
+
+        $response = $this->httpClient->createAndSendRequest($args);
+        $data     = $this->processResponse($response);
+
+        return $data;
+    }
+
+    /**
+     * @param int $link
+     *
+     * @return array
+     */
+    public function listSounds($link = 0)
+    {
+        $args = [
+            'api'    => self::API_BASE_SOUND_PARAMETER,
+            'method' => 'available',
+            'link'   => $link,
         ];
 
         $response = $this->httpClient->createAndSendRequest($args);
