@@ -10,6 +10,7 @@ use Http\Discovery\HttpClientDiscovery;
 use Psr\Http\Message\ResponseInterface;
 use Http\Message\Authentication\QueryParam;
 use Http\Discovery\MessageFactoryDiscovery;
+use Psr\Http\Message\StreamInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Http\Client\Common\Plugin\AuthenticationPlugin;
 
@@ -66,9 +67,12 @@ class WannaSpeakHttpClient
     /**
      * @param array $args
      *
+     * @param array                                $headers
+     * @param resource|string|StreamInterface|null $body
+     *
      * @return ResponseInterface
      */
-    public function createAndSendRequest($args)
+    public function createAndSendRequest($args, $headers = [], $body = null)
     {
         $defaultArgs = [
             'id' => $this->accountId,
@@ -77,7 +81,7 @@ class WannaSpeakHttpClient
         $args    = array_merge($defaultArgs, $args);
         $uri     = UriFactoryDiscovery::find()->createUri($this->baseUrl);
         $uri     = $uri->withQuery(http_build_query($args));
-        $request = MessageFactoryDiscovery::find()->createRequest(self::DEFAULT_METHOD_POST, $uri);
+        $request = MessageFactoryDiscovery::find()->createRequest(self::DEFAULT_METHOD_POST, $uri, $headers, $body);
 
         return $this->sendRequest($request);
     }
