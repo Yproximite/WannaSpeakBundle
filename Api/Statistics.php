@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  *
  * @see http://fr.wannaspeak.com/
  */
-class Statistics
+class Statistics implements StatisticsInterface
 {
     const API_BASE_STAT_PARAMETER  = 'stat';
     const API_BASE_CT_PARAMETER    = 'ct';
