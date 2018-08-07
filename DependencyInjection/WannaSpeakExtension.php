@@ -40,7 +40,7 @@ class WannaSpeakExtension extends Extension
         $container->setParameter('wanna_speak.api.test', $config['api']['test']);
 
         if (!empty($config['http_client'])) {
-            $container->getDefinition('wanna_speak.http_client')->replaceArgument(4, new Reference($config['http_client']));
+            $container->getDefinition('Yproximite\WannaSpeakBundle\Api\WannaSpeakHttpClient')->replaceArgument(4, new Reference($config['http_client']));
         }
     }
 }
