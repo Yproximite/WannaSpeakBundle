@@ -95,10 +95,11 @@ class Statistics implements StatisticsInterface
      * @param bool        $callerId
      * @param string|null $leg1
      * @param string|null $leg2
+     * @param string|null $phoneMobileNumberForMissedCall
      *
      * @return array
      */
-    public function callTracking($method, $name, $phoneDest, $phoneDid, $platformId, $siteId, $callerId = false, $leg1 = null, $leg2 = null)
+    public function callTracking($method, $name, $phoneDest, $phoneDid, $platformId, $siteId, $callerId = false, $leg1 = null, $leg2 = null, $phoneMobileNumberForMissedCall = null)
     {
         $args = [
             'api'         => self::API_BASE_CT_PARAMETER,
@@ -117,6 +118,10 @@ class Statistics implements StatisticsInterface
 
         if ($leg2 !== null) {
             $args['leg2'] = $leg2;
+        }
+
+        if ($phoneMobileNumberForMissedCall !== null) {
+            $args['sms'] = $phoneMobileNumberForMissedCall;
         }
 
         $response = $this->httpClient->createAndSendRequest($args);
