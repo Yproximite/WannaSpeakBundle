@@ -131,21 +131,21 @@ class Statistics implements StatisticsInterface
     }
     /**
     * @param string $didPhone
-    * @param \DateTime $endDate
+    * @param \DateTime $expirationDate
     *
     * @return array
     */
-    public function callTrackingModifyForDelete($didPhone, \DateTime $endDate = null)
+    public function callTrackingExpiresAt($didPhone, \DateTime $expirationDate = null)
     {
-        if (!$endDate) {
-            $endDate = new \DateTime('NOW');
+        if (!$expirationDate) {
+            $expirationDate = new \DateTime('now');
         }
 
         $args = [
             'api'     => self::API_BASE_CT_PARAMETER,
             'method'  => 'modify',
             'did'     => $didPhone,
-            'enddate' => $endDate->format('Y-m-d H:i:s'),
+            'enddate' => $expirationDate->format('Y-m-d H:i:s'),
         ];
 
         $response = $this->httpClient->createAndSendRequest($args);

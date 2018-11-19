@@ -7,5 +7,5 @@ interface StatisticsInterface
 
     public function callTrackingDelete($didPhone);
 
-    public function callTrackingModifyForDelete($didPhone, \DateTime $endDate = null);
+    public function callTrackingExpiresAt($didPhone, \DateTime $expirationDate = null);
 }
