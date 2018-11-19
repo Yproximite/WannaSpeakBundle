@@ -131,7 +131,7 @@ class Statistics implements StatisticsInterface
     }
     /**
     * @param string $didPhone
-    * @param \DateTime $enddate
+    * @param \DateTime $endDate
     *
     * @return array
     */
