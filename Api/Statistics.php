@@ -129,6 +129,30 @@ class Statistics implements StatisticsInterface
 
         return $data;
     }
+    /**
+    * @param string $didPhone
+    * @param \DateTime $expirationDate
+    *
+    * @return array
+    */
+    public function callTrackingExpiresAt($didPhone, \DateTime $expirationDate = null)
+    {
+        if (!$expirationDate) {
+            $expirationDate = new \DateTime('now');
+        }
+
+        $args = [
+            'api'     => self::API_BASE_CT_PARAMETER,
+            'method'  => 'modify',
+            'did'     => $didPhone,
+            'enddate' => $expirationDate->format('Y-m-d H:i:s'),
+        ];
+
+        $response = $this->httpClient->createAndSendRequest($args);
+        $data     = $this->processResponse($response);
+
+        return $data;
+    }
 
     /**
      * Will fetch all datas from your account
