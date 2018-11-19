@@ -129,6 +129,30 @@ class Statistics implements StatisticsInterface
 
         return $data;
     }
+    /**
+    * @param string $didPhone
+    * @param \DateTime $enddate
+    *
+    * @return array
+    */
+    public function callTrackingModifyForDelete($didPhone, \DateTime $endDate = null)
+    {
+        if (!$endDate) {
+            $endDate = new \DateTime('NOW');
+        }
+
+        $args = [
+            'api'     => self::API_BASE_CT_PARAMETER,
+            'method'  => 'modify',
+            'did'     => $didPhone,
+            'enddate' => $endDate->format('Y-m-d H:i:s'),
+        ];
+
+        $response = $this->httpClient->createAndSendRequest($args);
+        $data     = $this->processResponse($response);
+
+        return $data;
+    }
 
     /**
      * Will fetch all datas from your account
