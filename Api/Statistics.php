@@ -99,8 +99,20 @@ class Statistics implements StatisticsInterface
      *
      * @return array
      */
-    public function callTracking($method, $name, $phoneDest, $phoneDid, $platformId, $siteId, $callerId = false, $leg1 = null, $leg2 = null, $phoneMobileNumberForMissedCall = null)
-    {
+    public function callTracking(
+        $method,
+        $name,
+        $phoneDest,
+        $phoneDid,
+        $platformId,
+        $siteId,
+        $callerId = false,
+        $leg1 = null,
+        $leg2 = null,
+        $phoneMobileNumberForMissedCall = null,
+        $smsSenderName = null,
+        $smsCompanyName = null
+    ) {
         $args = [
             'api'         => self::API_BASE_CT_PARAMETER,
             'method'      => $method,
@@ -122,6 +134,14 @@ class Statistics implements StatisticsInterface
 
         if ($phoneMobileNumberForMissedCall !== null) {
             $args['sms'] = $phoneMobileNumberForMissedCall;
+
+            if ($smsSenderName !== null && $smsSenderName !== '') {
+                $args['var4'] = $smsSenderName;
+            }
+
+            if ($smsCompanyName !== null && $smsCompanyName !== '') {
+                $args['var5'] = $smsCompanyName;
+            }
         }
 
         $response = $this->httpClient->createAndSendRequest($args);
@@ -129,12 +149,13 @@ class Statistics implements StatisticsInterface
 
         return $data;
     }
+
     /**
-    * @param string $didPhone
-    * @param \DateTime $expirationDate
-    *
-    * @return array
-    */
+     * @param string    $didPhone
+     * @param \DateTime $expirationDate
+     *
+     * @return array
+     */
     public function callTrackingExpiresAt($didPhone, \DateTime $expirationDate = null)
     {
         if (!$expirationDate) {
@@ -355,7 +376,7 @@ class Statistics implements StatisticsInterface
      */
     public function deleteMessageWannaspeak($name)
     {
-        $args    = [
+        $args = [
             'api'    => 'sound',
             'method' => 'delete',
             'name'   => $name,
