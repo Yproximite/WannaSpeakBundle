@@ -136,11 +136,11 @@ class Statistics implements StatisticsInterface
             $args['sms'] = $phoneMobileNumberForMissedCall;
 
             if ($smsSenderName !== null && $smsSenderName !== '') {
-                $args['var4'] = $smsSenderName;
+                $args['tag4'] = $smsSenderName;
             }
 
             if ($smsCompanyName !== null && $smsCompanyName !== '') {
-                $args['var5'] = $smsCompanyName;
+                $args['tag5'] = $smsCompanyName;
             }
         }
 
