@@ -76,7 +76,10 @@ class Statistics implements StatisticsInterface
         $data = json_decode($response->getBody()->getContents(), true);
 
         if ($data['error']) {
-            throw new \Exception('WannaSpeak API: '.$data['error']['txt']);
+            throw new \Exception(sprintf(
+                'WannaSpeak API: %s',
+                is_array($data['error']) ? $data['error']['txt'] : $data['error']
+            ));
         }
 
         return $data;
