@@ -108,12 +108,10 @@ class WannaSpeakHttpClient
     protected function getHttpClient()
     {
         if ($this->httpClient === null) {
-            $this->httpClient = HttpClientDiscovery::find();
+            $authentication       = new QueryParam(['key' => $this->getAuthKey()]);
+            $authenticationPlugin = new AuthenticationPlugin($authentication);
+            $this->httpClient     = new PluginClient(HttpClientDiscovery::find(), [$authenticationPlugin]);
         }
-
-        $authentication       = new QueryParam(['key' => $this->getAuthKey()]);
-        $authenticationPlugin = new AuthenticationPlugin($authentication);
-        $this->httpClient     = new PluginClient($this->httpClient, [$authenticationPlugin]);
 
         return $this->httpClient;
     }
