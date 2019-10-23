@@ -1,0 +1,55 @@
+dist: bionic
+
+language: php
+
+cache:
+    directories:
+        - $HOME/.composer/cache/files
+
+env:
+    global:
+        - PHPUNIT_FLAGS="-v"
+        - SYMFONY_PHPUNIT_DIR="$HOME/symfony-bridge/.phpunit"
+        - COMPOSER_MEMORY_LIMIT=-1
+
+matrix:
+    fast_finish: true
+    include:
+        # Minimum supported dependencies with the latest and oldest PHP version
+        - php: 7.3
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="max[self]=0"
+        - php: 7.4snapshot
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="max[self]=0"
+
+            # Test the latest stable release
+        - php: 7.3
+        - php: 7.4snapshot
+          env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-text"
+
+            # Test specific Symfony versions
+        - php: 7.4snapshot
+          env: SYMFONY_VERSION="4.3.5" # LTS
+        - php: 7.4snapshot
+          env: SYMFONY_VERSION="4.*" # Last 4.x version
+
+            # Latest commit to master
+        - php: 7.4snapshot
+          env: STABILITY="dev"
+
+    allow_failures:
+        # Dev-master is allowed to fail.
+        - env: STABILITY="dev"
+
+before_install:
+    - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
+    - if ! [ -z "$STABILITY" ]; then composer config minimum-stability ${STABILITY}; fi;
+    - composer require --no-update symfony/flex ${DEPENDENCIES}
+    - if ! [ -z "$SYMFONY_VERSION" ]; then composer config extra.symfony.require "${SYMFONY_VERSION}"; fi;
+
+install:
+    - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
+    - ./vendor/bin/simple-phpunit install
+
+script:
+    - composer validate --strict --no-check-lock
+    - ./vendor/bin/simple-phpunit $PHPUNIT_FLAGS
