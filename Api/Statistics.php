@@ -8,12 +8,8 @@
 
 namespace Yproximite\WannaSpeakBundle\Api;
 
-use Http\Discovery\MessageFactoryDiscovery;
-use Http\Discovery\StreamFactoryDiscovery;
-use Http\Discovery\UriFactoryDiscovery;
-use Http\Message\MultipartStream\MultipartStreamBuilder;
-use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Mime\Part\DataPart;
 
 /**
  * Class Statistics
@@ -339,34 +335,15 @@ class Statistics implements StatisticsInterface
     public function uploadMessageToWannaspeak(UploadedFile $message)
     {
         $name    = str_replace('.mp3', '', $message->getClientOriginalName());
-        $args    = [
+
+        $body    = [
             'api'    => 'sound',
             'method' => 'upload',
             'name'   => $name,
-        ];
-        $options = [
-            'filename' => $name,
-            'headers'  => [
-                'Content-Type' => 'application/octet-stream',
-            ],
+            'sound' => DataPart::fromPath($message->getRealPath(), $name)
         ];
 
-        $boundary      = '--------------------------'.microtime(true);
-        $streamFactory = StreamFactoryDiscovery::find();
-        $builder       = new MultipartStreamBuilder($streamFactory);
-
-        $builder->setBoundary($boundary);
-
-        $fp   = fopen($message->getRealPath(), 'rb');
-        $data = stream_get_contents($fp);
-        fclose($fp);
-
-        $builder->addResource('sound', $data, $options);
-
-        $body    = $builder->build();
-        $headers = ['Content-Type' => 'multipart/form-data; boundary="'.$boundary.'"'];
-
-        $response = $this->httpClient->createAndSendRequest($args, $headers, $body);
+        $response = $this->httpClient->createAndSendRequest($body);
         $data     = $this->processResponse($response);
 
         return $data;
