@@ -9,7 +9,7 @@ Communicate with Wannaspeak API (http://fr.wannaspeak.com/)
 ## Installation
 
 ```bash
-composer require yproximite/wanna-speak-bundle
+composer require yproximite/wanna-speak-bundle symfony/http-client
 ```
 
 ## Configuration
