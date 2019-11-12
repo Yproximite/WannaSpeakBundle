@@ -9,10 +9,15 @@
         {
             "name": "Jean-Baptiste Blanchon",
             "email": "jean-baptiste@yproximite.com"
+        },
+        {
+            "name": "Hugo Alliaume",
+            "email": "hugo@yproximite.com"
         }
     ],
     "require": {
-        "php": ">=7.3"
+        "php": ">=7.3",
+        "ext-json": "*"
     },
     "require-dev": {
         "symfony/framework-bundle": "^4.3",

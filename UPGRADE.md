@@ -10,5 +10,55 @@ Then you need to add the client's service name to `wanna_speak.http_client`. (Pr
 
 # Upgrade from 3.x to 4.x
 
-- Service id `wanna_speak.api.statistics` became `Yproximite\WannaSpeakBundle\Api\Statistics`
-- Service id `wanna_speak.http_client` became `Yproximite\WannaSpeakBundle\Api\WannaSpeakHttpClient`
+## Breaking changes
+
+- Service alias `wanna_speak.api.statistics` has been removed for `Yproximite\WannaSpeakBundle\Api\WannaSpeakApi`
+- Service `Yproximite\WannaSpeakBundle\Api\Statistics` has been renamed to `Yproximite\WannaSpeakBundle\Api\WannaSpeakApi`
+- Service alias `wanna_speak.http_client` has been removed for `Yproximite\WannaSpeakBundle\Api\WannaSpeakHttpClient`
+- Method `Yproximite\WannaSpeakBundle\Api\Statistics#processResponse()` is now protected.
+- Interface `Yproximite\WannaSpeakBundle\Api\StatisticsInterface` has been renamed to `Yproximite\WannaSpeakBundle\Api\WannaSpeakApiInterface`
+- Signature of `Yproximite\WannaSpeakBundle\Api\StatisticsInterface` has been modified
+
+## Features
+- Methods ``, `` have been added to `Yproximite\WannaSpeakBundle\Api\WannaSpeakApiInterface`
+
+## Misc
+
+- `phoneDid` has been renamed to `trackingPhone`
+- `phoneDest` has been renamed to `trackedPhone`
+
+## Migration
+
+### `Yproximite\WannaSpeakBundle\Api\StatisticsInterface#callTracking()`
+
+This method was too specific for our own usage at Yproximite, so the signature has been rewritten.
+
+Before:
+```
+callTracking(
+    /* string */ $method,
+    /* string */ $name,
+    /* string */ $trackedPhone,
+    /* string */ $trackingPhone,
+    /* int */ $platformId,
+    /* int */ $siteId,
+    /* bool */ $callerId = false,
+    /* string|null */ $leg1 = null,
+    /* string|null */ $leg2 = null,
+    /* string|null */ $phoneMobileNumberForMissedCall = null,
+    /* string|null */ $smsSenderName = null,
+    /* string|null */ $smsCompanyName = null
+)
+```
+```php
+<?php
+$wannaSpeakApi->callTracking('add', 'A name', '33122334455', '33566778899', 1100, 13245);
+
+// with callee support
+$wannaSpeakApi->callTracking('add', 'A name', '33122334455', '33566778899', 1100, 13245);
+```
+
+Now:
+```php
+
+```

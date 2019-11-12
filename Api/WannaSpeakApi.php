@@ -4,48 +4,38 @@
  * WannaSpeak API Bundle
  *
  * @author Jean-Baptiste Blanchon <jean-baptiste@yproximite.com>
+ * @author Hugo Alliaume <hugo@yproximite.com>
  */
 
 namespace Yproximite\WannaSpeakBundle\Api;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 /**
- * Class Statistics
- *
  * @see http://fr.wannaspeak.com/
  */
-class Statistics implements StatisticsInterface
+class WannaSpeakApi implements WannaSpeakApiInterface
 {
     const API_BASE_STAT_PARAMETER  = 'stat';
     const API_BASE_CT_PARAMETER    = 'ct';
     const API_BASE_SOUND_PARAMETER = 'sound';
     const BEGIN_DATE               = '01-01-2015';
 
-    /**
-     * @var WannaSpeakHttpClient
-     */
     private $httpClient;
 
-    /**
-     * __construct
-     *
-     * @param WannaSpeakHttpClient $httpClient
-     */
     public function __construct(WannaSpeakHttpClient $httpClient)
     {
         $this->httpClient = $httpClient;
     }
 
     /**
-     * @param string $method
-     *
-     * @return mixed
-     *
-     * @throws \Exception
+     * {@inheritdoc}
+     * @throws HttpExceptionInterface
      */
-    public function getNumbers($method)
+    public function getNumbers(string $method): array
     {
         $args = [
             'api'    => self::API_BASE_CT_PARAMETER,
@@ -59,36 +49,13 @@ class Statistics implements StatisticsInterface
     }
 
     /**
-     * Process the API response, provides error handling
-     *
-     * @param ResponseInterface $response
-     *
-     * @throws \Exception
-     *
-     * @return array
-     */
-    public function processResponse(ResponseInterface $response)
-    {
-        $data = json_decode($response->getBody()->getContents(), true);
-
-        if ($data['error']) {
-            throw new \Exception(sprintf(
-                'WannaSpeak API: %s',
-                is_array($data['error']) ? $data['error']['txt'] : $data['error']
-            ));
-        }
-
-        return $data;
-    }
-
-    /**
      * We store the platformId in tag1
      *          and siteId     in tag2
      *
      * @param string      $method
      * @param string      $name
-     * @param string      $phoneDest
-     * @param string      $phoneDid
+     * @param string      $trackedPhone
+     * @param string      $trackingPhone
      * @param string      $platformId
      * @param string      $siteId
      * @param bool        $callerId
@@ -101,8 +68,8 @@ class Statistics implements StatisticsInterface
     public function callTracking(
         $method,
         $name,
-        $phoneDest,
-        $phoneDid,
+        $trackedPhone,
+        $trackingPhone,
         $platformId,
         $siteId,
         $callerId = false,
@@ -115,11 +82,11 @@ class Statistics implements StatisticsInterface
         $args = [
             'api'         => self::API_BASE_CT_PARAMETER,
             'method'      => $method,
-            'destination' => $phoneDest,
+            'destination' => $trackedPhone,
             'tag1'        => $platformId,
             'tag2'        => $siteId,
-            'tag3'        => ($callerId === true) ? 'callerid:'.$phoneDid : '',
-            'did'         => $phoneDid,
+            'tag3'        => ($callerId === true) ? 'callerid:'.$trackingPhone : '',
+            'did'         => $trackingPhone,
             'name'        => $name,
         ];
 
@@ -364,6 +331,25 @@ class Statistics implements StatisticsInterface
 
         $response = $this->httpClient->createAndSendRequest($args);
         $data     = $this->processResponse($response);
+
+        return $data;
+    }
+
+    /**
+     * Process the API response, provides error handling
+     * @throws \Exception
+     */
+    protected function processResponse(ResponseInterface $response): array
+    {
+        $data = $response->toArray();
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        if ($data['error']) {
+            throw new \Exception(sprintf(
+                'WannaSpeak API: %s',
+                is_array($data['error']) ? $data['error']['txt'] : $data['error']
+            ));
+        }
 
         return $data;
     }

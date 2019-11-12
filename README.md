@@ -20,13 +20,19 @@ composer require yproximite/wanna-speak-bundle symfony/http-client
 // config/packages/wanna_speak.yaml:
 wanna_speak:
     api:
+        # Required
         credentials:
             account_id: '9999999999'
             secret_key: '0000000000'
 
+        # Required
         base_url: https://www-2.wannaspeak.com/api/api.php
 
-        # Testing mode
+        # Optional, if you have defined scoped Symfony HTTP Client, you can use it here.
+        # Documentation: https://symfony.com/doc/current/components/http_client.html#configuration
+        http_client: '@my_http_client_for_wanna_speak'
+
+        # Optional, will disable API calls if `true`
         test: false
 ```
 
