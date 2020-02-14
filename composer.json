@@ -16,20 +16,21 @@
         }
     ],
     "require": {
-        "php": ">=7.3",
-        "ext-json": "*"
+        "php": "^7.3",
+        "ext-json": "*",
+        "symfony/framework-bundle": "^4.3 || ^5.0",
+        "symfony/http-client": "^4.3 || ^5.0"
     },
     "require-dev": {
-        "symfony/framework-bundle": "^4.3",
-        "symfony/http-client": "^4.3",
         "phpspec/phpspec": "^6.1"
     },
-    "suggest": {
-        "symfony/framework-bundle": "4.3",
-        "symfony/http-client": "4.3"
-    },
     "autoload": {
-        "psr-4": { "Yproximite\\WannaSpeakBundle\\": "" }
+        "psr-4": {
+            "Yproximite\\WannaSpeakBundle\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
     },
     "minimum-stability": "stable",
     "extra": {
