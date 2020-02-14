@@ -21,7 +21,8 @@
     },
     "require-dev": {
         "symfony/framework-bundle": "^4.3",
-        "symfony/http-client": "^4.3"
+        "symfony/http-client": "^4.3",
+        "phpspec/phpspec": "^6.1"
     },
     "suggest": {
         "symfony/framework-bundle": "4.3",
