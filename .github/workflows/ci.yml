@@ -27,6 +27,8 @@ jobs:
 
             -   run: composer install --prefer-dist --no-interaction --no-progress
 
+            -   run: composer phpunit -- install
+
             -   run: composer validate --strict
 
             -   run: composer phpstan
@@ -91,6 +93,3 @@ jobs:
 
             -   name: Run PHPUnit
                 run: composer phpunit -- ${{ matrix.config.PHPUNIT_FLAGS }}
-
-            -   name: Run phpspec
-                run: composer phpspec
