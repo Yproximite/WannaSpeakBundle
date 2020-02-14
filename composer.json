@@ -32,11 +32,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Yproximite\\WannaSpeakBundle\\": ""
-        },
-        "exclude-from-classmap": [
-            "/Tests/"
-        ]
+            "Yproximite\\WannaSpeakBundle\\": "src/"
+        }
     },
     "minimum-stability": "stable",
     "extra": {
