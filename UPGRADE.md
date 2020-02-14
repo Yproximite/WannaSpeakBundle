@@ -20,7 +20,8 @@ Then you need to add the client's service name to `wanna_speak.http_client`. (Pr
 - Signature of `Yproximite\WannaSpeakBundle\Api\StatisticsInterface` has been modified
 
 ## Features
-- Methods ``, `` have been added to `Yproximite\WannaSpeakBundle\Api\WannaSpeakApiInterface`
+
+- Exception `Yproximite\WannaSpeakBundle\Exception\WannaSpeakException` has been added.
 
 ## Misc
 

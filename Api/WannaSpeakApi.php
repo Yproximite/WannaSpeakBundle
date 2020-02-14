@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use Yproximite\WannaSpeakBundle\Exception\WannaSpeakException;
 
 /**
  * @see http://fr.wannaspeak.com/
@@ -342,12 +343,11 @@ class WannaSpeakApi implements WannaSpeakApiInterface
     protected function processResponse(ResponseInterface $response): array
     {
         $data = $response->toArray();
-        $data = json_decode($response->getBody()->getContents(), true);
 
-        if ($data['error']) {
-            throw new \Exception(sprintf(
+        if (isset($data['error'])) {
+            throw new WannaSpeakException(sprintf(
                 'WannaSpeak API: %s',
-                is_array($data['error']) ? $data['error']['txt'] : $data['error']
+                is_array($data['error']) && isset($data['error']['txt']) ? $data['error']['txt'] : (is_string($data['error']) ? $data['error'] : 'Unknown error.')
             ));
         }
 
