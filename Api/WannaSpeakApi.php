@@ -338,17 +338,20 @@ class WannaSpeakApi implements WannaSpeakApiInterface
 
     /**
      * Process the API response, provides error handling
-     * @throws \Exception
+     *
+     * @throws WannaSpeakException
      */
     protected function processResponse(ResponseInterface $response): array
     {
         $data = $response->toArray();
 
         if (isset($data['error'])) {
-            throw new WannaSpeakException(sprintf(
-                'WannaSpeak API: %s',
-                is_array($data['error']) && isset($data['error']['txt']) ? $data['error']['txt'] : (is_string($data['error']) ? $data['error'] : 'Unknown error.')
-            ));
+            $message = is_array($data['error']) ? $data['error']['txt'] : $data['error'];
+            if (!is_string($message)) {
+                $message = 'Unknown error.';
+            }
+
+            throw new WannaSpeakException(sprintf('WannaSpeak API: %s', $message));
         }
 
         return $data;
