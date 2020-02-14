@@ -1,0 +1,13 @@
+framework:
+    http_client:
+        scoped_clients:
+            wannaspeak.client:
+                base_uri: https://www-2.wannaspeak.com/api/api.php
+                timeout: 5
+
+wanna_speak:
+    http_client: 'wannaspeak.client'
+    api:
+        credentials:
+            account_id: '9999999999'
+            secret_key: '0000000000'

@@ -20,17 +20,47 @@ composer require yproximite/wanna-speak-bundle symfony/http-client
 // config/packages/wanna_speak.yaml:
 wanna_speak:
     api:
-        # Required
         credentials:
             account_id: '9999999999'
             secret_key: '0000000000'
 
-        # Required
         base_url: https://www-2.wannaspeak.com/api/api.php
 
-        # Optional, if you have defined scoped Symfony HTTP Client, you can use it here.
-        # Documentation: https://symfony.com/doc/current/components/http_client.html#configuration
-        http_client: '@my_http_client_for_wanna_speak'
+        # Optional, will disable API calls if `true`
+        test: false
+```
+
+### HttpClient
+
+You can choose to use your own [Symfony HttpClient](https://symfony.com/doc/current/components/http_client.html) by using config key `http_client`.
+
+First let's define your scoped new HttpClient: 
+
+```yaml
+# framework.yaml
+framework:
+    http_client:
+        scoped_clients:
+            wannaspeak_api.client:
+                # since "base_uri" has to be configured here, you can remove "wanna_speak.api.base_url" config 
+                base_uri: https://www-2.wannaspeak.com/api/api.php
+               
+                # configure options... see https://symfony.com/doc/current/reference/configuration/framework.html#http-client
+                timeout: 5
+```
+
+and then reference it in your WannaSpeak API configuration with the config key `http_client`:
+
+```yaml
+# config/packages/wanna_speak.yaml:
+wanna_speak:
+    api:
+        credentials:
+            account_id: '9999999999'
+            secret_key: '0000000000'
+
+        # You can remove "base_url" option and use "http_client"
+        http_client: '@wannaspeak_api.client'
 
         # Optional, will disable API calls if `true`
         test: false

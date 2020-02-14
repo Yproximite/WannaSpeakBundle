@@ -1,0 +1,18 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    # API
+    Yproximite\WannaSpeakBundle\Api\WannaSpeakApiInterface: '@Yproximite\WannaSpeakBundle\Api\WannaSpeakApi'
+
+    Yproximite\WannaSpeakBundle\Api\WannaSpeakApi: ~
+
+    # HTTP Client
+    Yproximite\WannaSpeakBundle\Api\WannaSpeakHttpClient:
+        arguments:
+             $accountId: '%wanna_speak.api.account_id%'
+             $secretKey: '%wanna_speak.api.secret_key%'
+             $test: '%wanna_speak.api.test%'
+             $baseUrl: '%wanna_speak.api.base_url%'
+             $httpClient: ~

@@ -1,0 +1,8 @@
+wanna_speak:
+    api:
+        credentials:
+            account_id: '9999999999'
+            secret_key: '0000000000'
+
+        # Required
+        base_url: https://www-2.wannaspeak.com/api/api.php

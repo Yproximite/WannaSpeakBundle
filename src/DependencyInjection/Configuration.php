@@ -23,11 +23,27 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode    = $treeBuilder->root('wanna_speak');
+        if (method_exists(TreeBuilder::class, 'getRootNode')) {
+            $treeBuilder = new TreeBuilder('wanna_speak');
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            $treeBuilder = new TreeBuilder();
+            $rootNode = $treeBuilder->root('wanna_speak');
+        }
+
         $rootNode
+            ->beforeNormalization()
+                ->always(function ($v) {
+                    if (!isset($v['api']['base_url']) && !isset($v['http_client'])) {
+                        throw new \InvalidArgumentException('The "base_url" option is required if "http_client" is empty.');
+                    }
+
+                    return $v;
+                })
+            ->end()
             ->children()
                 ->arrayNode('api')
+                    ->isRequired()
                     ->children()
                         ->arrayNode('credentials')
                             ->children()
@@ -35,7 +51,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('secret_key')->info('Secret key given by WannaSpeak\'s customer service')->isRequired()->end()
                             ->end()
                         ->end()
-                        ->scalarNode('base_url')->info('Url Api endpoint')->isRequired()->end()
+                        ->scalarNode('base_url')->info('Url Api endpoint')->end()
                         ->scalarNode('test')->defaultValue(false)->end()
                     ->end()
                 ->end()

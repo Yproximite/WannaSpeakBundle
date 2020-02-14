@@ -13,18 +13,16 @@ class WannaSpeakHttpClient
 
     protected $accountId;
     protected $secretKey;
-    protected $baseUrl;
     protected $test;
 
     private $httpClient;
 
-    public function __construct(string $accountId, string $secretKey, string $baseUrl, bool $test = false, HttpClientInterface $httpClient = null)
+    public function __construct(string $accountId, string $secretKey, bool $test = false, ?string $baseUrl = null, ?HttpClientInterface $httpClient = null)
     {
         $this->accountId  = $accountId;
         $this->secretKey  = $secretKey;
-        $this->baseUrl    = $baseUrl;
         $this->test       = $test;
-        $this->httpClient = $httpClient ?? HttpClient::create();
+        $this->httpClient = $httpClient ?? HttpClient::create(['base_uri' => $baseUrl]);
     }
 
     public function createAndSendRequest(array $body, array $headers = []): ResponseInterface
@@ -39,13 +37,13 @@ class WannaSpeakHttpClient
             'body'    => $formData->bodyToIterable(),
         ];
 
-        return $this->sendRequest(static::DEFAULT_METHOD_POST, $this->baseUrl, $options);
+        return $this->sendRequest(static::DEFAULT_METHOD_POST, $options);
     }
 
-    protected function sendRequest(string $method, string $url, array $options = []): ResponseInterface
+    protected function sendRequest(string $method, array $options = []): ResponseInterface
     {
         if (!$this->test) {
-            $response = $this->httpClient->request($method, $url, $options);
+            $response = $this->httpClient->request($method, '', $options);
         } else {
             throw new \LogicException('The configuration "wanna_speak.api.test" is set to "false", the request has not been sent to the WannaSpeak API.');
         }

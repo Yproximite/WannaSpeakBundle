@@ -42,6 +42,11 @@
             "Yproximite\\WannaSpeakBundle\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Yproximite\\WannaSpeakBundle\\": "tests/"
+        }
+    },
     "minimum-stability": "stable",
     "extra": {
         "branch-alias": {
