@@ -1,4 +1,13 @@
 vendor/
 composer.lock
-.phpunit.result.cache
+
+# VM & Ansible
+.vagrant/
+ansible/roles/.downloads
+ansible/roles/manala.*
+
+# PHP-CS-Fixer
 .php_cs.cache
+
+# PHPUnit
+.phpunit.result.cache
