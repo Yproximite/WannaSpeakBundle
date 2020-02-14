@@ -32,7 +32,7 @@ jobs:
 
             -   run: composer phpstan
 
-            # -   run: composer php-cs-fixer@ci
+            -   run: composer php-cs-fixer@ci
 
     test:
         runs-on: ubuntu-latest

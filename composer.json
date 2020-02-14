@@ -16,6 +16,9 @@
         }
     ],
     "scripts": {
+        "phpstan": "phpstan analyze --ansi",
+        "php-cs-fixer": "php-cs-fixer fix -v",
+        "php-cs-fixer@ci": "php-cs-fixer fix -v --diff --dry-run",
         "phpunit": "phpunit",
         "phpspec": "phpspec --ansi"
     },
@@ -28,7 +31,11 @@
     "require-dev": {
         "phpspec/phpspec": "^6.1",
         "phpunit/phpunit": "^8.5",
-        "nyholm/symfony-bundle-test": "^1.6"
+        "nyholm/symfony-bundle-test": "^1.6",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "phpstan/phpstan": "^0.12.10",
+        "phpstan/phpstan-strict-rules": "^0.12.2",
+        "phpstan/phpstan-phpunit": "^0.12.6"
     },
     "autoload": {
         "psr-4": {
