@@ -50,4 +50,95 @@ class WannaSpeakApiSpec extends ObjectBehavior
 
         $this->shouldThrow(new WannaSpeakException('WannaSpeak API: Unknown error.'))->during('callTracking', ['a', 'b', 'c', 'd']);
     }
+
+    public function it_add_calltracking(WannaSpeakHttpClient $httpClient, ResponseInterface $response)
+    {
+        $response->toArray()->shouldBeCalledOnce()->willReturn([]);
+
+        $httpClient
+            ->createAndSendRequest([
+                'api'         => 'ct',
+                'method'      => 'add',
+                'name'        => 'Name',
+                'destination' => '33122334455',
+                'did'         => '33988776655',
+            ])
+            ->shouldBeCalledOnce()
+            ->willReturn($response);
+
+        $this->callTracking('add', 'Name', '33122334455', '33988776655');
+    }
+
+    public function it_modify_calltracking(WannaSpeakHttpClient $httpClient, ResponseInterface $response)
+    {
+        $response->toArray()->shouldBeCalledOnce()->willReturn([]);
+
+        $httpClient
+            ->createAndSendRequest([
+                'api'         => 'ct',
+                'method'      => 'modify',
+                'name'        => 'Name',
+                'destination' => '33122334455',
+                'did'         => '33988776655',
+            ])
+            ->shouldBeCalledOnce()
+            ->willReturn($response);
+
+        $this->callTracking('modify', 'Name', '33122334455', '33988776655');
+    }
+
+    public function it_add_calltracking_with_additional_args(WannaSpeakHttpClient $httpClient, ResponseInterface $response)
+    {
+        $response->toArray()->shouldBeCalledOnce()->willReturn([]);
+
+        $httpClient
+            ->createAndSendRequest([
+                'api'         => 'ct',
+                'method'      => 'add',
+                'name'        => 'Name',
+                'destination' => '33122334455',
+                'did'         => '33988776655',
+                // caller/callee
+                'tag3' => 'callerid:33988776655',
+                'leg1' => 'caller_message',
+                'leg2' => 'callee_message',
+                // sms
+                'sms' => '33611223344',
+                'tag4' => 'Sender name',
+                'tag5' => 'Company name',
+            ])
+            ->shouldBeCalledOnce()
+            ->willReturn($response);
+
+        $this->callTracking('add', 'Name', '33122334455', '33988776655', [
+            // caller/callee
+            'tag3' => 'callerid:33988776655',
+            'leg1' => 'caller_message',
+            'leg2' => 'callee_message',
+            // sms
+            'sms' => '33611223344',
+            'tag4' => 'Sender name',
+            'tag5' => 'Company name',
+        ]);
+    }
+
+    public function it_add_calltracking_with_additional_args_without_override_initial_args(WannaSpeakHttpClient $httpClient, ResponseInterface $response)
+    {
+        $response->toArray()->shouldBeCalledOnce()->willReturn([]);
+
+        $httpClient
+            ->createAndSendRequest([
+                'api'         => 'ct',
+                'method'      => 'add',
+                'name'        => 'Name',
+                'destination' => '33122334455',
+                'did'         => '33988776655',
+            ])
+            ->shouldBeCalledOnce()
+            ->willReturn($response);
+
+        $this->callTracking('add', 'Name', '33122334455', '33988776655', [
+            'method' => 'foobar',
+        ]);
+    }
 }

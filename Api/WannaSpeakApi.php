@@ -50,66 +50,17 @@ class WannaSpeakApi implements WannaSpeakApiInterface
     }
 
     /**
-     * We store the platformId in tag1
-     *          and siteId     in tag2
-     *
-     * @param string      $method
-     * @param string      $name
-     * @param string      $trackedPhone
-     * @param string      $trackingPhone
-     * @param string      $platformId
-     * @param string      $siteId
-     * @param bool        $callerId
-     * @param string|null $leg1
-     * @param string|null $leg2
-     * @param string|null $phoneMobileNumberForMissedCall
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function callTracking(
-        $method,
-        $name,
-        $trackedPhone,
-        $trackingPhone,
-        $platformId,
-        $siteId,
-        $callerId = false,
-        $leg1 = null,
-        $leg2 = null,
-        $phoneMobileNumberForMissedCall = null,
-        $smsSenderName = null,
-        $smsCompanyName = null
-    ) {
-        $args = [
+    public function callTracking(string $method, string $name, string $trackedPhone, string $trackingPhone, array $additionalArgs = []): array
+    {
+        $args = array_merge($additionalArgs, [
             'api'         => self::API_BASE_CT_PARAMETER,
             'method'      => $method,
-            'destination' => $trackedPhone,
-            'tag1'        => $platformId,
-            'tag2'        => $siteId,
-            'tag3'        => ($callerId === true) ? 'callerid:'.$trackingPhone : '',
-            'did'         => $trackingPhone,
             'name'        => $name,
-        ];
-
-        if ($leg1 !== null) {
-            $args['leg1'] = $leg1;
-        }
-
-        if ($leg2 !== null) {
-            $args['leg2'] = $leg2;
-        }
-
-        if ($phoneMobileNumberForMissedCall !== null) {
-            $args['sms'] = $phoneMobileNumberForMissedCall;
-
-            if ($smsSenderName !== null && $smsSenderName !== '') {
-                $args['tag4'] = $smsSenderName;
-            }
-
-            if ($smsCompanyName !== null && $smsCompanyName !== '') {
-                $args['tag5'] = $smsCompanyName;
-            }
-        }
+            'destination' => $trackedPhone,
+            'did'         => $trackingPhone,
+        ]);
 
         $response = $this->httpClient->createAndSendRequest($args);
         $data     = $this->processResponse($response);
@@ -302,13 +253,13 @@ class WannaSpeakApi implements WannaSpeakApiInterface
      */
     public function uploadMessageToWannaspeak(UploadedFile $message)
     {
-        $name    = str_replace('.mp3', '', $message->getClientOriginalName());
+        $name = str_replace('.mp3', '', $message->getClientOriginalName());
 
-        $body    = [
+        $body = [
             'api'    => 'sound',
             'method' => 'upload',
             'name'   => $name,
-            'sound' => DataPart::fromPath($message->getRealPath(), $name)
+            'sound'  => DataPart::fromPath($message->getRealPath(), $name),
         ];
 
         $response = $this->httpClient->createAndSendRequest($body);
