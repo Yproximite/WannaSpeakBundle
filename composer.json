@@ -15,6 +15,10 @@
             "email": "hugo@yproximite.com"
         }
     ],
+    "scripts": {
+        "phpunit": "phpunit",
+        "phpspec": "phpspec --ansi"
+    },
     "require": {
         "php": "^7.3",
         "ext-json": "*",
@@ -22,7 +26,9 @@
         "symfony/http-client": "^4.3 || ^5.0"
     },
     "require-dev": {
-        "phpspec/phpspec": "^6.1"
+        "phpspec/phpspec": "^6.1",
+        "phpunit/phpunit": "^8.5",
+        "nyholm/symfony-bundle-test": "^1.6"
     },
     "autoload": {
         "psr-4": {
