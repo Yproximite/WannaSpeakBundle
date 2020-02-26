@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Http\Message\Authentication\QueryParam;
 use Http\Discovery\MessageFactoryDiscovery;
 use Psr\Http\Message\StreamInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Http\Client\Common\Plugin\AuthenticationPlugin;
 
@@ -47,6 +48,11 @@ class WannaSpeakHttpClient
     protected $test;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * __construct
      *
      * @param string     $accountId
@@ -54,14 +60,16 @@ class WannaSpeakHttpClient
      * @param string     $baseUrl
      * @param bool       $test
      * @param HttpClient $httpClient
+     * @param LoggerInterface $logger
      */
-    public function __construct($accountId, $secretKey, $baseUrl, $test = false, HttpClient $httpClient = null)
+    public function __construct($accountId, $secretKey, $baseUrl, $test = false, HttpClient $httpClient = null, LoggerInterface $logger)
     {
         $this->accountId  = $accountId;
         $this->secretKey  = $secretKey;
         $this->baseUrl    = $baseUrl;
         $this->test       = $test;
         $this->httpClient = $httpClient;
+        $this->logger     = $httpClient;
     }
 
     /**
@@ -82,6 +90,10 @@ class WannaSpeakHttpClient
         $uri     = UriFactoryDiscovery::find()->createUri($this->baseUrl);
         $uri     = $uri->withQuery(http_build_query($args));
         $request = MessageFactoryDiscovery::find()->createRequest(self::DEFAULT_METHOD_POST, $uri, $headers, $body);
+
+        if (null !== $this->logger) {
+            $this->logger->log('info', 'Sent request : '.$request);
+        }
 
         return $this->sendRequest($request);
     }

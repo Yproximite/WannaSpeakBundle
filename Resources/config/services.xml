@@ -6,6 +6,7 @@
     <services>
         <service id="Yproximite\WannaSpeakBundle\Api\Statistics" class="Yproximite\WannaSpeakBundle\Api\Statistics" public="true">
             <argument type="service" id="Yproximite\WannaSpeakBundle\Api\WannaSpeakHttpClient"/>
+            <argument type="service" id="logger" on-invalid="null"/>
         </service>
 
         <service id="Yproximite\WannaSpeakBundle\Api\WannaSpeakHttpClient" class="Yproximite\WannaSpeakBundle\Api\WannaSpeakHttpClient" public="true">
