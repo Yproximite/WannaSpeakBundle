@@ -69,7 +69,7 @@ class WannaSpeakHttpClient
         $this->baseUrl    = $baseUrl;
         $this->test       = $test;
         $this->httpClient = $httpClient;
-        $this->logger     = $httpClient;
+        $this->logger     = $logger;
     }
 
     /**
