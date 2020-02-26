@@ -12,6 +12,7 @@ use Http\Discovery\StreamFactoryDiscovery;
 use Http\Message\MultipartStream\MultipartStreamBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Statistics
@@ -40,7 +41,7 @@ class Statistics implements StatisticsInterface
      *
      * @param WannaSpeakHttpClient $httpClient
      */
-    public function __construct(WannaSpeakHttpClient $httpClient, LoggerInterface $logger)
+    public function __construct(WannaSpeakHttpClient $httpClient, LoggerInterface $logger = null)
     {
         $this->httpClient = $httpClient;
         $this->logger     = $logger;
@@ -254,7 +255,7 @@ class Statistics implements StatisticsInterface
         $response = $this->httpClient->createAndSendRequest($args);
 
         if (null !== $this->logger) {
-            $this->logger->log('info', 'Response : '.$response);
+            $this->logger->info('Response : '.$response);
         }
 
         $data = $this->processResponse($response);

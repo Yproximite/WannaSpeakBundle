@@ -62,7 +62,7 @@ class WannaSpeakHttpClient
      * @param HttpClient $httpClient
      * @param LoggerInterface $logger
      */
-    public function __construct($accountId, $secretKey, $baseUrl, $test = false, HttpClient $httpClient = null, LoggerInterface $logger)
+    public function __construct($accountId, $secretKey, $baseUrl, $test = false, HttpClient $httpClient = null, LoggerInterface $logger = null)
     {
         $this->accountId  = $accountId;
         $this->secretKey  = $secretKey;
@@ -92,7 +92,7 @@ class WannaSpeakHttpClient
         $request = MessageFactoryDiscovery::find()->createRequest(self::DEFAULT_METHOD_POST, $uri, $headers, $body);
 
         if (null !== $this->logger) {
-            $this->logger->log('info', 'Sent request : '.$request);
+            $this->logger->info('Sent request : '.$request);
         }
 
         return $this->sendRequest($request);
