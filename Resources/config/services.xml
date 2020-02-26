@@ -15,6 +15,7 @@
             <argument>%wanna_speak.api.base_url%</argument>
             <argument>%wanna_speak.api.test%</argument>
             <argument>null</argument>
+            <argument type="service" id="logger" on-invalid="null"/>
         </service>
     </services>
 </container>
