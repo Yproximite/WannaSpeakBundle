@@ -102,7 +102,7 @@ class WannaSpeakHttpClient
 
         // Throw Exception to trigger Httplug Retry plugin
         if($response->getStatusCode() !== 200){
-            throw new NetworkException('Wannaspeak request error', $request);
+            throw new NetworkException('Wannaspeak request error : response code ' . $response->getStatusCode(), $request);
         }
 
         return $response;
