@@ -2,6 +2,7 @@
 
 namespace Yproximite\WannaSpeakBundle\Api;
 
+use Http\Client\Exception\NetworkException;
 use Http\Client\HttpClient;
 use Http\Client\Common\PluginClient;
 use Psr\Http\Message\RequestInterface;
@@ -105,6 +106,11 @@ class WannaSpeakHttpClient
             $response = $this->getHttpClient()->sendRequest($request);
         } else {
             throw new \LogicException('You are in dev env, the API has not been called, try modify your configuration if you are sure...');
+        }
+
+        // Throw Exception to trigger Httplug Retry plugin
+        if($response->getStatusCode() !== 200){
+            throw new NetworkException('Wannaspeak request error', $request);
         }
 
         return $response;

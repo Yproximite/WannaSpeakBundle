@@ -255,11 +255,6 @@ class Statistics implements StatisticsInterface
 
         $response = $this->httpClient->createAndSendRequest($args);
 
-        // if timeout, throw Exception to trigger Httplug Retry plugin
-        if($response->getStatusCode() === 504){
-            throw new NetworkException('Timeout detected !');
-        }
-
         $data = $this->processResponse($response);
 
         return $data;
