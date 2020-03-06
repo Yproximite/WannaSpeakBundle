@@ -91,10 +91,6 @@ class WannaSpeakHttpClient
         $uri     = $uri->withQuery(http_build_query($args));
         $request = MessageFactoryDiscovery::find()->createRequest(self::DEFAULT_METHOD_POST, $uri, $headers, $body);
 
-        if (null !== $this->logger) {
-            $this->logger->info('Sent request : '.$request);
-        }
-
         return $this->sendRequest($request);
     }
 
