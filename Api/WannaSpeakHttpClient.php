@@ -12,7 +12,6 @@ use Psr\Http\Message\ResponseInterface;
 use Http\Message\Authentication\QueryParam;
 use Http\Discovery\MessageFactoryDiscovery;
 use Psr\Http\Message\StreamInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Http\Client\Common\Plugin\AuthenticationPlugin;
 
@@ -49,11 +48,6 @@ class WannaSpeakHttpClient
     protected $test;
 
     /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * __construct
      *
      * @param string     $accountId
@@ -61,16 +55,14 @@ class WannaSpeakHttpClient
      * @param string     $baseUrl
      * @param bool       $test
      * @param HttpClient $httpClient
-     * @param LoggerInterface $logger
      */
-    public function __construct($accountId, $secretKey, $baseUrl, $test = false, HttpClient $httpClient = null, LoggerInterface $logger = null)
+    public function __construct($accountId, $secretKey, $baseUrl, $test = false, HttpClient $httpClient = null)
     {
         $this->accountId  = $accountId;
         $this->secretKey  = $secretKey;
         $this->baseUrl    = $baseUrl;
         $this->test       = $test;
         $this->httpClient = $httpClient;
-        $this->logger     = $logger;
     }
 
     /**

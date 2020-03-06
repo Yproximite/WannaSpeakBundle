@@ -8,12 +8,10 @@
 
 namespace Yproximite\WannaSpeakBundle\Api;
 
-use Http\Client\Exception\NetworkException;
 use Http\Discovery\StreamFactoryDiscovery;
 use Http\Message\MultipartStream\MultipartStreamBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Psr\Log\LoggerInterface;
 
 /**
  * Class Statistics
@@ -33,19 +31,13 @@ class Statistics implements StatisticsInterface
     private $httpClient;
 
     /**
-     * @var LoggerInterface $logger
-     */
-    private $logger;
-
-    /**
      * __construct
      *
      * @param WannaSpeakHttpClient $httpClient
      */
-    public function __construct(WannaSpeakHttpClient $httpClient, LoggerInterface $logger = null)
+    public function __construct(WannaSpeakHttpClient $httpClient)
     {
         $this->httpClient = $httpClient;
-        $this->logger     = $logger;
     }
 
     /**
@@ -254,8 +246,7 @@ class Statistics implements StatisticsInterface
         ];
 
         $response = $this->httpClient->createAndSendRequest($args);
-
-        $data = $this->processResponse($response);
+        $data     = $this->processResponse($response);
 
         return $data;
     }

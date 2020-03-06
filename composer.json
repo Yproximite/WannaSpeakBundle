@@ -21,9 +21,6 @@
         "php-http/message": "^1.2",
         "php-http/client-common": "^1.2"
     },
-    "suggest": {
-        "symfony/monolog-bundle": "^3.0"
-    },
     "autoload": {
         "psr-4": { "Yproximite\\WannaSpeakBundle\\": "" }
     },
