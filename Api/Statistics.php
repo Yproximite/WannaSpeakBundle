@@ -67,9 +67,9 @@ class Statistics implements StatisticsInterface
      *
      * @param ResponseInterface $response
      *
+     * @return array
      * @throws \Exception
      *
-     * @return array
      */
     public function processResponse(ResponseInterface $response)
     {
@@ -166,10 +166,10 @@ class Statistics implements StatisticsInterface
         }
 
         $args = [
-            'api'     => self::API_BASE_CT_PARAMETER,
-            'method'  => 'modify',
-            'did'     => $didPhone,
-            'enddate' => $expirationDate->format('Y-m-d H:i:s'),
+            'api'      => self::API_BASE_CT_PARAMETER,
+            'method'   => 'modify',
+            'did'      => $didPhone,
+            'stopdate' => $expirationDate->format('Y-m-d H:i:s'),
         ];
 
         $response = $this->httpClient->createAndSendRequest($args);
