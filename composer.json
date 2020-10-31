@@ -11,6 +11,13 @@
             "email": "jean-baptiste@yproximite.com"
         }
     ],
+    "scripts": {
+        "phpstan": "phpstan analyze --ansi",
+        "php-cs-fixer": "php-cs-fixer fix -v",
+        "php-cs-fixer@ci": "php-cs-fixer fix -v --diff --dry-run",
+        "phpunit": "phpunit",
+        "phpspec": "phpspec --ansi"
+    },
     "require": {
         "php": ">=5.4|>=7.0",
         "symfony/config": "^3.0|^4.0",
@@ -29,5 +36,14 @@
         "branch-alias": {
             "dev-master": "1.0-dev"
         }
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^0.12.52",
+        "phpspec/phpspec": "^6.2",
+        "phpunit/phpunit": "^9.4",
+        "nyholm/symfony-bundle-test": "^1.6",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "phpstan/phpstan-phpunit": "^0.12.16",
+        "phpstan/phpstan-strict-rules": "^0.12.5"
     }
 }
