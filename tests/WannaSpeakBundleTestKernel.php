@@ -6,9 +6,11 @@ use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+use Symfony\Component\Routing\RouteCollectionBuilder;
 use Yproximite\WannaSpeakBundle\WannaSpeakBundle;
 
-class WannaSpeakBundleTestKernel extends Kernel
+class AbstractWannaSpeakBundleTestKernel extends Kernel
 {
     use MicroKernelTrait;
 
@@ -45,5 +47,22 @@ class WannaSpeakBundleTestKernel extends Kernel
                 'test' => true,
             ],
         ]);
+    }
+}
+
+
+if (AbstractWannaSpeakBundleTestKernel::VERSION_ID >= 50100) { // @phpstan-ignore-line
+    class WannaSpeakBundleTestKernel extends AbstractWannaSpeakBundleTestKernel
+    {
+        protected function configureRoutes(RoutingConfigurator $routes): void
+        {
+        }
+    }
+} else { // @phpstan-ignore-line
+    class WannaSpeakBundleTestKernel extends AbstractWannaSpeakBundleTestKernel
+    {
+        protected function configureRoutes(RouteCollectionBuilder $routes): void
+        {
+        }
     }
 }

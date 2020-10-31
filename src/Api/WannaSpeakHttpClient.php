@@ -53,7 +53,7 @@ class WannaSpeakHttpClient
         foreach ($headers as $headerName => $headerValue) {
             $request = $request->withHeader($headerName, $headerValue);
         }
-        if ($body !== null) {
+        if (null !== $body) {
             $request = $request->withBody($body);
         }
 
