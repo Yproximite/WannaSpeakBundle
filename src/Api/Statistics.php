@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * WannaSpeak API Bundle
  *
@@ -8,9 +10,7 @@
 
 namespace Yproximite\WannaSpeakBundle\Api;
 
-use Http\Discovery\MessageFactoryDiscovery;
 use Http\Discovery\StreamFactoryDiscovery;
-use Http\Discovery\UriFactoryDiscovery;
 use Http\Message\MultipartStream\MultipartStreamBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -34,8 +34,6 @@ class Statistics implements StatisticsInterface
 
     /**
      * __construct
-     *
-     * @param WannaSpeakHttpClient $httpClient
      */
     public function __construct(WannaSpeakHttpClient $httpClient)
     {
@@ -65,21 +63,16 @@ class Statistics implements StatisticsInterface
     /**
      * Process the API response, provides error handling
      *
-     * @param ResponseInterface $response
-     *
      * @return array
-     * @throws \Exception
      *
+     * @throws \Exception
      */
     public function processResponse(ResponseInterface $response)
     {
         $data = json_decode($response->getBody()->getContents(), true);
 
         if ($data['error']) {
-            throw new \Exception(sprintf(
-                'WannaSpeak API: %s',
-                is_array($data['error']) ? $data['error']['txt'] : $data['error']
-            ));
+            throw new \Exception(sprintf('WannaSpeak API: %s', is_array($data['error']) ? $data['error']['txt'] : $data['error']));
         }
 
         return $data;
@@ -122,27 +115,27 @@ class Statistics implements StatisticsInterface
             'destination' => $phoneDest,
             'tag1'        => $platformId,
             'tag2'        => $siteId,
-            'tag3'        => ($callerId === true) ? 'callerid:'.$phoneDid : '',
+            'tag3'        => (true === $callerId) ? 'callerid:'.$phoneDid : '',
             'did'         => $phoneDid,
             'name'        => $name,
         ];
 
-        if ($leg1 !== null) {
+        if (null !== $leg1) {
             $args['leg1'] = $leg1;
         }
 
-        if ($leg2 !== null) {
+        if (null !== $leg2) {
             $args['leg2'] = $leg2;
         }
 
-        if ($phoneMobileNumberForMissedCall !== null) {
+        if (null !== $phoneMobileNumberForMissedCall) {
             $args['sms'] = $phoneMobileNumberForMissedCall;
 
-            if ($smsSenderName !== null && $smsSenderName !== '') {
+            if (null !== $smsSenderName && '' !== $smsSenderName) {
                 $args['tag4'] = $smsSenderName;
             }
 
-            if ($smsCompanyName !== null && $smsCompanyName !== '') {
+            if (null !== $smsCompanyName && '' !== $smsCompanyName) {
                 $args['tag5'] = $smsCompanyName;
             }
         }
@@ -293,7 +286,6 @@ class Statistics implements StatisticsInterface
     }
 
     /**
-     *
      * @param string $didPhone
      *
      * @return array
@@ -332,8 +324,6 @@ class Statistics implements StatisticsInterface
     }
 
     /**
-     * @param UploadedFile $message
-     *
      * @return array
      */
     public function uploadMessageToWannaspeak(UploadedFile $message)

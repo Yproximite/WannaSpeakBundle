@@ -8,7 +8,6 @@ on:
         types: [opened, synchronize, reopened, ready_for_review]
 
 env:
-    CI: true
     TZ: UTC
 
     PHPUNIT_FLAGS: -v
@@ -53,23 +52,18 @@ jobs:
                         PHPUNIT_FLAGS: -v --coverage-text
 
                     # Test specific Symfony versions
-                    -   PHP_VERSION: 7.3
-                        SYMFONY_VERSION: 4.3.* # LTS
-                    -   PHP_VERSION: 7.3
-                        SYMFONY_VERSION: 4.4.* # Last 4.x version
                     -   PHP_VERSION: 7.4
                         SYMFONY_VERSION: 4.3.* # LTS
                     -   PHP_VERSION: 7.4
                         SYMFONY_VERSION: 4.4.* # Last 4.x version
                     -   PHP_VERSION: 7.3
                         SYMFONY_VERSION: 5.0.*
-                    -   PHP_VERSION: 7.5
+                    -   PHP_VERSION: 7.4
                         SYMFONY_VERSION: 5.0.*
-
-                    # Latest commit to master (disabled until GitHub Actions support allowed_failures)
-                    # - PHP_VERSION: 7.4
-                    #   STABILITY: dev
-                    #   ALLOWED_TO_FAIL: true
+                    -   PHP_VERSION: 7.3
+                        SYMFONY_VERSION: 5.1.*
+                    -   PHP_VERSION: 7.4
+                        SYMFONY_VERSION: 5.1.*
 
         steps:
             -   uses: actions/checkout@v2
@@ -84,25 +78,19 @@ jobs:
             -   name: Configure Composer minimum stability
                 if: matrix.config.STABILITY
                 run: composer config minimum-stability ${{ matrix.config.STABILITY }}
-                # continue-on-error: ${{ matrix.config.ALLOWED_TO_FAIL == true }}
 
             -   name: Install globally Symfony Flex
                 run: composer global require --no-progress --no-scripts --no-plugins symfony/flex dev-master
-                # continue-on-error: ${{ matrix.config.ALLOWED_TO_FAIL == true }}
 
             -   name: Limit to specific Symfony version
                 if: matrix.config.SYMFONY_VERSION
                 run: echo "::set-env name=SYMFONY_REQUIRE::${{ matrix.config.SYMFONY_VERSION }}"
-                # continue-on-error: ${{ matrix.config.ALLOWED_TO_FAIL == true }}
 
             -   name: Install composer dependencies
                 run: composer update ${{ matrix.config.COMPOSER_FLAGS }} --prefer-dist --no-interaction
-                # continue-on-error: ${{ matrix.config.ALLOWED_TO_FAIL == true }}
 
             -   name: Run PHPUnit
                 run: composer phpunit -- ${{ matrix.config.PHPUNIT_FLAGS }}
-                # continue-on-error: ${{ matrix.config.ALLOWED_TO_FAIL == true }}
 
             -   name: Run phpspec
                 run: composer phpspec
-                # continue-on-error: ${{ matrix.config.ALLOWED_TO_FAIL == true }}

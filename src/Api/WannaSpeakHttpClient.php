@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yproximite\WannaSpeakBundle\Api;
 
-use Http\Client\HttpClient;
+use Http\Client\Common\Plugin\AuthenticationPlugin;
 use Http\Client\Common\PluginClient;
-use Psr\Http\Message\RequestInterface;
-use Http\Discovery\UriFactoryDiscovery;
+use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
-use Psr\Http\Message\ResponseInterface;
-use Http\Message\Authentication\QueryParam;
 use Http\Discovery\MessageFactoryDiscovery;
+use Http\Discovery\UriFactoryDiscovery;
+use Http\Message\Authentication\QueryParam;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Http\Client\Common\Plugin\AuthenticationPlugin;
 
 /**
  * Class WannaSpeakHttpClient
@@ -22,27 +24,27 @@ class WannaSpeakHttpClient
     const DEFAULT_METHOD_POST = 'POST';
 
     /**
-     * @var $httpClient HttpClient
+     * @var HttpClient
      */
     private $httpClient;
 
     /**
-     * @var string $accountId
+     * @var string
      */
     protected $accountId;
 
     /**
-     * @var string $secretKey
+     * @var string
      */
     protected $secretKey;
 
     /**
-     * @var string $baseUrl
+     * @var string
      */
     protected $baseUrl;
 
     /**
-     * @var boolean $test
+     * @var bool
      */
     protected $test;
 
@@ -65,8 +67,7 @@ class WannaSpeakHttpClient
     }
 
     /**
-     * @param array $args
-     *
+     * @param array                                $args
      * @param array                                $headers
      * @param resource|string|StreamInterface|null $body
      *
@@ -107,7 +108,7 @@ class WannaSpeakHttpClient
      */
     protected function getHttpClient()
     {
-        $client = $this->httpClient !== null ? $this->httpClient : HttpClientDiscovery::find();
+        $client = null !== $this->httpClient ? $this->httpClient : HttpClientDiscovery::find();
 
         $authentication       = new QueryParam(['key' => $this->getAuthKey()]);
         $authenticationPlugin = new AuthenticationPlugin($authentication);
