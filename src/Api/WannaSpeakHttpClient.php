@@ -8,13 +8,11 @@ use Http\Client\Common\Plugin\AuthenticationPlugin;
 use Http\Client\Common\PluginClient;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
-use Http\Discovery\MessageFactoryDiscovery;
-use Http\Discovery\UriFactoryDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Message\Authentication\QueryParam;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class WannaSpeakHttpClient
@@ -79,10 +77,16 @@ class WannaSpeakHttpClient
             'id' => $this->accountId,
         ];
 
-        $args    = array_merge($defaultArgs, $args);
-        $uri     = UriFactoryDiscovery::find()->createUri($this->baseUrl);
-        $uri     = $uri->withQuery(http_build_query($args));
-        $request = MessageFactoryDiscovery::find()->createRequest(self::DEFAULT_METHOD_POST, $uri, $headers, $body);
+        $uri = Psr17FactoryDiscovery::findUriFactory()->createUri($this->baseUrl);
+        $uri = $uri->withQuery(http_build_query(array_merge($defaultArgs, $args)));
+
+        $request = Psr17FactoryDiscovery::findRequestFactory()->createRequest(self::DEFAULT_METHOD_POST, $uri);
+        foreach($headers as $headerName => $headerValue) {
+            $request = $request->withHeader($headerName, $headerValue);
+        }
+        if($body !== null) {
+            $request = $request->withBody($body);
+        }
 
         return $this->sendRequest($request);
     }
@@ -90,7 +94,7 @@ class WannaSpeakHttpClient
     /**
      * @param RequestInterface $request
      *
-     * @return array|Response|null
+     * @return array|ResponseInterface|null
      */
     protected function sendRequest($request)
     {

@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Yproximite\WannaSpeakBundle\Api;
 
-use Http\Discovery\StreamFactoryDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Message\MultipartStream\MultipartStreamBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -342,7 +342,7 @@ class Statistics implements StatisticsInterface
         ];
 
         $boundary      = '--------------------------'.microtime(true);
-        $streamFactory = StreamFactoryDiscovery::find();
+        $streamFactory = Psr17FactoryDiscovery::findStreamFactory();
         $builder       = new MultipartStreamBuilder($streamFactory);
 
         $builder->setBoundary($boundary);
