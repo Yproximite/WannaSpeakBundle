@@ -2,6 +2,7 @@ includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/phpstan/phpstan-phpunit/rules.neon
+    - phpstan-baseline.neon
 
 parameters:
     level: max
@@ -9,3 +10,8 @@ parameters:
     paths:
         - src
         - tests
+
+    bootstrapFiles:
+        - vendor/bin/.phpunit/phpunit/vendor/autoload.php
+
+    inferPrivatePropertyTypeFromConstructor: true

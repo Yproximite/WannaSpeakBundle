@@ -6,22 +6,34 @@ namespace Yproximite\WannaSpeakBundle\Api;
 
 interface StatisticsInterface
 {
+    /**
+     * We store the platformId in tag1
+     *          and siteId     in tag2
+     *
+     * @return array<string,mixed>
+     */
     public function callTracking(
-        $method,
-        $name,
-        $phoneDest,
-        $phoneDid,
-        $platformId,
-        $siteId,
-        $callerId = false,
-        $leg1 = null,
-        $leg2 = null,
-        $phoneMobileNumberForMissedCall = null,
-        $smsSenderName = null,
-        $smsCompanyName = null
-    );
+        string $method,
+        string $name,
+        string $phoneDest,
+        string $phoneDid,
+        string $platformId,
+        string $siteId,
+        bool $callerId = false,
+        ?string $leg1 = null,
+        ?string $leg2 = null,
+        ?string $phoneMobileNumberForMissedCall = null,
+        ?string $smsSenderName = null,
+        ?string $smsCompanyName = null
+    ): array;
 
-    public function callTrackingDelete($didPhone);
+    /**
+     * @return array<string,mixed>
+     */
+    public function callTrackingDelete(string $didPhone): array;
 
-    public function callTrackingExpiresAt($didPhone, \DateTime $expirationDate = null);
+    /**
+     * @return array<string,mixed>
+     */
+    public function callTrackingExpiresAt(string $didPhone, ?\DateTimeInterface $expirationDate = null): array;
 }

@@ -27,10 +27,11 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('wanna_speak');
 
+        // @phpstan-ignore-next-line
         if (method_exists($treeBuilder, 'getRootNode')) {
             $rootNode = $treeBuilder->getRootNode();
         } else {
-            $rootNode = $treeBuilder->root('wanna_speak');
+            $rootNode = $treeBuilder->root('wanna_speak'); // @phpstan-ignore-line
         }
 
         $rootNode
@@ -47,7 +48,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('test')->defaultValue(false)->end()
                     ->end()
                 ->end()
-                ->scalarNode('http_client')
+                ->scalarNode('http_client')->defaultValue(null)
             ->end();
 
         return $treeBuilder;

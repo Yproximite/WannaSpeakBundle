@@ -21,41 +21,13 @@ class WannaSpeakHttpClient
 {
     const DEFAULT_METHOD_POST = 'POST';
 
-    /**
-     * @var HttpClient
-     */
+    private $accountId;
+    private $secretKey;
+    private $baseUrl;
+    private $test;
     private $httpClient;
 
-    /**
-     * @var string
-     */
-    protected $accountId;
-
-    /**
-     * @var string
-     */
-    protected $secretKey;
-
-    /**
-     * @var string
-     */
-    protected $baseUrl;
-
-    /**
-     * @var bool
-     */
-    protected $test;
-
-    /**
-     * __construct
-     *
-     * @param string     $accountId
-     * @param string     $secretKey
-     * @param string     $baseUrl
-     * @param bool       $test
-     * @param HttpClient $httpClient
-     */
-    public function __construct($accountId, $secretKey, $baseUrl, $test = false, HttpClient $httpClient = null)
+    public function __construct(string $accountId, string $secretKey, string $baseUrl, bool $test = false, ?HttpClient $httpClient = null)
     {
         $this->accountId  = $accountId;
         $this->secretKey  = $secretKey;
@@ -65,13 +37,10 @@ class WannaSpeakHttpClient
     }
 
     /**
-     * @param array                                $args
-     * @param array                                $headers
-     * @param resource|string|StreamInterface|null $body
-     *
-     * @return ResponseInterface
+     * @param array<string,mixed> $args
+     * @param array<string,mixed> $headers
      */
-    public function createAndSendRequest($args, $headers = [], $body = null)
+    public function createAndSendRequest(array $args, array $headers = [], ?StreamInterface $body = null): ResponseInterface
     {
         $defaultArgs = [
             'id' => $this->accountId,
@@ -81,22 +50,17 @@ class WannaSpeakHttpClient
         $uri = $uri->withQuery(http_build_query(array_merge($defaultArgs, $args)));
 
         $request = Psr17FactoryDiscovery::findRequestFactory()->createRequest(self::DEFAULT_METHOD_POST, $uri);
-        foreach($headers as $headerName => $headerValue) {
+        foreach ($headers as $headerName => $headerValue) {
             $request = $request->withHeader($headerName, $headerValue);
         }
-        if($body !== null) {
+        if ($body !== null) {
             $request = $request->withBody($body);
         }
 
         return $this->sendRequest($request);
     }
 
-    /**
-     * @param RequestInterface $request
-     *
-     * @return array|ResponseInterface|null
-     */
-    protected function sendRequest($request)
+    protected function sendRequest(RequestInterface $request): ResponseInterface
     {
         if (!$this->test) {
             $response = $this->getHttpClient()->sendRequest($request);
@@ -107,10 +71,7 @@ class WannaSpeakHttpClient
         return $response;
     }
 
-    /**
-     * @return HttpClient
-     */
-    protected function getHttpClient()
+    protected function getHttpClient(): HttpClient
     {
         $client = null !== $this->httpClient ? $this->httpClient : HttpClientDiscovery::find();
 
@@ -120,12 +81,7 @@ class WannaSpeakHttpClient
         return new PluginClient($client, [$authenticationPlugin]);
     }
 
-    /**
-     * Return your Authentication key
-     *
-     * @return string
-     */
-    protected function getAuthKey()
+    protected function getAuthKey(): string
     {
         $timeStamp = time();
 
