@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * WannaSpeak API Bundle
  *
@@ -19,12 +21,19 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode    = $treeBuilder->root('wanna_speak');
+        $treeBuilder = new TreeBuilder('wanna_speak');
+
+        // @phpstan-ignore-next-line
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            $rootNode = $treeBuilder->root('wanna_speak'); // @phpstan-ignore-line
+        }
+
         $rootNode
             ->children()
                 ->arrayNode('api')
@@ -39,7 +48,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('test')->defaultValue(false)->end()
                     ->end()
                 ->end()
-                ->scalarNode('http_client')
+                ->scalarNode('http_client')->defaultValue(null)
             ->end();
 
         return $treeBuilder;
