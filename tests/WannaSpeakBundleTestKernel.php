@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 use Yproximite\WannaSpeakBundle\WannaSpeakBundle;
 
-class AbstractWannaSpeakBundleTestKernel extends Kernel
+abstract class AbstractWannaSpeakBundleTestKernel extends Kernel
 {
     use MicroKernelTrait;
 
