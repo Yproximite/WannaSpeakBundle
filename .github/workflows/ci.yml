@@ -82,7 +82,7 @@ jobs:
                 run: composer config minimum-stability ${{ matrix.config.STABILITY }}
 
             -   name: Install globally Symfony Flex
-                run: composer global require --no-progress --no-scripts --no-plugins symfony/flex dev-master
+                run: composer global require --no-progress --no-scripts --no-plugins symfony/flex dev-main
 
             -   name: Limit to specific Symfony version
                 if: matrix.config.SYMFONY_VERSION
