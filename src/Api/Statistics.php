@@ -255,9 +255,6 @@ class Statistics implements StatisticsInterface
         return $data;
     }
 
-    /**
-     * @return array<string,mixed>
-     */
     public function listSounds(int $link = 0): array
     {
         $args = [
