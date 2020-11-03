@@ -40,5 +40,5 @@ interface StatisticsInterface
     /**
      * @return array<string,mixed>
      */
-    public function listSounds(int $link = 0): array
+    public function listSounds(int $link = 0): array;
 }
