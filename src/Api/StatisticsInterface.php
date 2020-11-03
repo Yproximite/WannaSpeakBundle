@@ -36,7 +36,7 @@ interface StatisticsInterface
      * @return array<string,mixed>
      */
     public function callTrackingExpiresAt(string $didPhone, ?\DateTimeInterface $expirationDate = null): array;
-    
+
     /**
      * @return array<string,mixed>
      */
