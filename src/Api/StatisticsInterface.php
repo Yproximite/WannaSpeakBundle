@@ -10,7 +10,7 @@ interface StatisticsInterface
      * We store the platformId in tag1
      *          and siteId     in tag2
      *
-     * @return array<string,mixed>
+     * @return mixed
      */
     public function callTracking(
         string $method,
@@ -25,20 +25,20 @@ interface StatisticsInterface
         ?string $phoneMobileNumberForMissedCall = null,
         ?string $smsSenderName = null,
         ?string $smsCompanyName = null
-    ): array;
+    );
 
     /**
-     * @return array<string,mixed>
+     * @return mixed
      */
-    public function callTrackingDelete(string $didPhone): array;
+    public function callTrackingDelete(string $didPhone);
 
     /**
-     * @return array<string,mixed>
+     * @return mixed>
      */
-    public function callTrackingExpiresAt(string $didPhone, ?\DateTimeInterface $expirationDate = null): array;
+    public function callTrackingExpiresAt(string $didPhone, ?\DateTimeInterface $expirationDate = null);
 
     /**
-     * @return array<string,mixed>
+     * @return mixed
      */
-    public function listSounds(int $link = 0): array;
+    public function listSounds(int $link = 0);
 }
