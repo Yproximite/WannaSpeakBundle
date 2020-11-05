@@ -47,22 +47,23 @@ class Statistics implements StatisticsInterface
         $response = $this->httpClient->createAndSendRequest($args);
         $data     = $this->processResponse($response);
 
-        return $data['data']['dids'];
+        return $data['data']['dids'] ?? null;
     }
 
     /**
      * Process the API response, provides error handling
      *
-     * @return array<string, mixed>
+     * @return mixed
      *
      * @throws \Exception
      */
-    public function processResponse(ResponseInterface $response): array
+    public function processResponse(ResponseInterface $response)
     {
         $data = json_decode($response->getBody()->getContents(), true);
 
-        if ($data['error']) {
-            throw new \Exception(sprintf('WannaSpeak API: %s', is_array($data['error']) ? $data['error']['txt'] : $data['error']));
+        if (is_array($data) && array_key_exists('error', $data)) {
+            $error = is_array($data['error']) ? $data['error']['txt'] : $data['error'];
+            throw new \Exception(sprintf('WannaSpeak API: %s', $error));
         }
 
         return $data;
@@ -81,7 +82,7 @@ class Statistics implements StatisticsInterface
         ?string $phoneMobileNumberForMissedCall = null,
         ?string $smsSenderName = null,
         ?string $smsCompanyName = null
-    ): array {
+    ) {
         $args = [
             'api'         => self::API_BASE_CT_PARAMETER,
             'method'      => $method,
@@ -119,7 +120,7 @@ class Statistics implements StatisticsInterface
         return $data;
     }
 
-    public function callTrackingExpiresAt(string $didPhone, ?\DateTimeInterface $expirationDate = null): array
+    public function callTrackingExpiresAt(string $didPhone, ?\DateTimeInterface $expirationDate = null)
     {
         if (null === $expirationDate) {
             $expirationDate = new \DateTime('now');
@@ -146,7 +147,7 @@ class Statistics implements StatisticsInterface
      * today's calls. we provide defaults dates in order to have all
      * calls from the begining of the time to now
      *
-     * @return array<string,mixed>
+     * @return mixed
      */
     public function getAllStats(?\DateTimeInterface $beginDate = null, ?\DateTimeInterface $endDate = null)
     {
@@ -179,9 +180,9 @@ class Statistics implements StatisticsInterface
      * today's calls. we provide defaults dates in order to have all
      * calls from the begining of the time to now
      *
-     * @return array<string,mixed>
+     * @return mixed
      */
-    public function getStatsByPlatform(string $platformId, ?\DateTimeInterface $beginDate = null, ?\DateTimeInterface $endDate = null): array
+    public function getStatsByPlatform(string $platformId, ?\DateTimeInterface $beginDate = null, ?\DateTimeInterface $endDate = null)
     {
         if (null === $beginDate) {
             $beginDate = new \DateTime(self::BEGIN_DATE);
@@ -214,7 +215,7 @@ class Statistics implements StatisticsInterface
      * today's calls. we provide defaults dates in order to have all
      * calls from the begining of the time to now
      *
-     * @return array<string,mixed>
+     * @return mixed
      */
     public function getStatsBySite(string $siteId, ?\DateTimeInterface $beginDate = null, ?\DateTimeInterface $endDate = null)
     {
@@ -241,7 +242,7 @@ class Statistics implements StatisticsInterface
         return $data;
     }
 
-    public function callTrackingDelete(string $didPhone): array
+    public function callTrackingDelete(string $didPhone)
     {
         $args = [
             'api'    => self::API_BASE_CT_PARAMETER,
@@ -255,7 +256,7 @@ class Statistics implements StatisticsInterface
         return $data;
     }
 
-    public function listSounds(int $link = 0): array
+    public function listSounds(int $link = 0)
     {
         $args = [
             'api'    => self::API_BASE_SOUND_PARAMETER,
@@ -270,9 +271,9 @@ class Statistics implements StatisticsInterface
     }
 
     /**
-     * @return array<string,mixed>
+     * @return mixed
      */
-    public function uploadMessageToWannaspeak(UploadedFile $message): array
+    public function uploadMessageToWannaspeak(UploadedFile $message)
     {
         if (false === $path = $message->getRealPath()) {
             throw new \Exception('Unable to get path of uploaded file.');
@@ -308,9 +309,9 @@ class Statistics implements StatisticsInterface
     }
 
     /**
-     * @return array<string,mixed>
+     * @return mixed
      */
-    public function deleteMessageWannaspeak(string $name): array
+    public function deleteMessageWannaspeak(string $name)
     {
         $args = [
             'api'    => 'sound',

@@ -19,6 +19,7 @@
     },
     "require": {
         "php": "^7.1",
+        "ext-json": "*",
         "symfony/framework-bundle": "^3.4 || ^4.0 || ^5.0",
         "php-http/httplug": "^1.0",
         "php-http/discovery": "^1.0",
