@@ -1,5 +1,6 @@
 # WannaSpeakBundle
-Communicate with Wannaspeak API (http://fr.wannaspeak.com/)
+
+Symfony bundle for the Wannaspeak API (http://fr.wannaspeak.com/)
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/bfac8ac4-0f50-408d-8652-4b36738f94ee/small.png)](https://insight.sensiolabs.com/projects/bfac8ac4-0f50-408d-8652-4b36738f94ee) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Yproximite/WannaSpeakBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Yproximite/WannaSpeakBundle/?branch=master)
 
@@ -9,59 +10,23 @@ Communicate with Wannaspeak API (http://fr.wannaspeak.com/)
 composer require yproximite/wanna-speak-bundle
 ```
 
-*Note: It's your responsibility to use one of [those adapters](https://packagist.org/providers/php-http/client-implementation)*
-*For example:
-
-```bash
-composer require php-http/guzzle6-adapter
-```
-
-Add to your AppKernel:
+Update your `config/bundles.php`
 
 ```php
-new Yproximite\WannaSpeakBundle\WannaSpeakBundle(),
+return [
+    // ...
+    Yproximite\WannaSpeakBundle\WannaSpeakBundle::class => ['all' => true],
+];
 ```
 
 ## Configuration
 
-### Credentials and url
-
 ``` yaml
-// app/config/config.yml:
+// config/packages/wanna_speak.yml:
 wanna_speak:
     api:
+        base_url: 'https://www-2.wannaspeak.com/api/api.php' # default
         credentials:
-            account_id: '9999999999'
-            secret_key: '0000000000'
-        base_url: https://www-2.wannaspeak.com/api/api.php
-        test: false
-
-```
-
-
-### Choose HTTP client
-
-WannaSpeakBundle 2.0 is no longer coupled to Guzzle3. Thanks to [Httplug](http://docs.php-http.org/en/latest/index.html) you can now use any
-library to transport HTTP messages. You can rely on [discovery](http://docs.php-http.org/en/latest/discovery.html) to automatically
-find an installed client or you can provide a client service name to the configuration (see [HttplugBundle](https://github.com/php-http/HttplugBundle)). 
-
-``` yaml
-// app/config/config.yml:
-wanna_speak:
-    http_client: 'httplug.client'
-
-```
-
-### Full references
-
-``` yaml
-// app/config/config.yml:
-wanna_speak:
-    api:
-        credentials:
-            account_id: '9999999999'
-            secret_key: '0000000000'
-        base_url: https://www-2.wannaspeak.com/api/api.php
-        test: false
-    http_client: 'httplug.client'
+            account_id: '9999999999' # required
+            secret_key: '0000000000' # required
 ```
