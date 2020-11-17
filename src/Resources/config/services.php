@@ -24,7 +24,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ->args([
             '$accountId' => '%wanna_speak.api.account_id%',
             '$secretKey' => '%wanna_speak.api.secret_key%',
-            '$baseUrl'   => '%wanna_speak.api.base_url%',
+            '$baseUri'   => '%wanna_speak.api.base_uri%',
             '$test'      => '%wanna_speak.api.test%',
         ]);
 };

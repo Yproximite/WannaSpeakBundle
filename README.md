@@ -25,7 +25,7 @@ return [
 // config/packages/wanna_speak.yml:
 wanna_speak:
     api:
-        base_url: 'https://www-2.wannaspeak.com/api/api.php' # default
+        base_uri: 'https://www-2.wannaspeak.com/api/api.php' # default
         credentials:
             account_id: '9999999999' # required
             secret_key: '0000000000' # required

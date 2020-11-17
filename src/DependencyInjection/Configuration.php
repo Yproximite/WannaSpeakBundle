@@ -33,7 +33,7 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                             ->end()
                         ->end()
-                        ->scalarNode('base_url')
+                        ->scalarNode('base_uri')
                             ->defaultValue('https://www-2.wannaspeak.com/api/api.php')
                         ->end()
                         ->scalarNode('test')

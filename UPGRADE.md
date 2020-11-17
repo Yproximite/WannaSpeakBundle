@@ -17,6 +17,7 @@ Then you need to add the client's service name to `wanna_speak.http_client`. (Pr
 
 The whole bundle has been rewritten for the better! 
 
-- The support of Symfony 3 has been removed, only Symfony 4 and 5 are supported 
-- PHP-HTTP has been removed in favor of the Symfony HTTP Client 
+- The support of Symfony 3 has been removed, only Symfony 4 and 5 are supported
+- Config `api.base_url` has been renamed to `api.base_uri`
+- PHP-HTTP has been removed in favor of the Symfony HTTP Client
 - `Statistics` class does not implement call-tracking/sounds API anymore, each API have their dedicated classes
