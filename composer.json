@@ -9,12 +9,14 @@
         "phpstan": "phpstan analyze --ansi",
         "php-cs-fixer": "php-cs-fixer fix -v",
         "php-cs-fixer@ci": "php-cs-fixer fix -v --diff --dry-run",
-        "phpunit": "simple-phpunit"
+        "phpunit": "simple-phpunit",
+        "phpspec": "phpspec --ansi"
     },
     "require": {
         "php": "^7.1",
         "ext-json": "*",
         "symfony/framework-bundle": "^4.0 || ^5.0",
+        "symfony/http-client": "^4.0 || ^5.0",
         "symfony/yaml": "^4.0 || ^5.0"
     },
     "require-dev": {
@@ -22,7 +24,8 @@
         "friendsofphp/php-cs-fixer": "^2.16",
         "phpstan/phpstan-phpunit": "^0.12.16",
         "phpstan/phpstan-strict-rules": "^0.12.5",
-        "symfony/phpunit-bridge": "^4.0 || ^5.0"
+        "symfony/phpunit-bridge": "^4.0 || ^5.0",
+        "phpspec/phpspec": "^7.0"
     },
     "autoload": {
         "psr-4": { "Yproximite\\WannaSpeakBundle\\": "src" }
