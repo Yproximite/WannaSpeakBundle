@@ -65,12 +65,31 @@ class HttpClient implements HttpClientInterface
      */
     private function doRequest(string $api, string $method, array $additionalArguments = []): ResponseInterface
     {
-        $formData = new FormDataPart(array_merge($additionalArguments, [
+        $fields = array_merge($additionalArguments, [
             'id'     => $this->accountId,
             'key'    => $this->getAuthKey(),
             'api'    => $api,
             'method' => $method,
-        ]));
+        ]);
+
+        // Prevent FormDataPart to throw when encountering a non-string value
+        $fields = array_reduce(array_keys($fields), function (array $acc, string $fieldKey) use ($fields) {
+            $fieldValue = $fields[$fieldKey];
+
+            if (true === $fieldValue) {
+                $fieldValue = 'true';
+            } elseif (false === $fieldValue) {
+                $fieldValue = 'false';
+            } elseif (is_int($fieldValue)) {
+                $fieldValue = (string) $fieldValue;
+            }
+
+            $acc[$fieldKey] = $fieldValue;
+
+            return $acc;
+        }, []);
+
+        $formData = new FormDataPart($fields);
 
         $options = [
             'headers' => $formData->getPreparedHeaders()->toArray(),

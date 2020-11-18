@@ -278,4 +278,38 @@ class HttpClientTest extends TestCase
 
         $client->request('the api', 'the method');
     }
+
+    public function testRequestWithDifferentTypesOfArguments(): void
+    {
+        $fieldsAllFound = false;
+
+        $client = $this->createHttpClient(static function (string $method, string $url, array $options) use (&$fieldsAllFound) {
+            $body = '';
+            while ($part = $options['body']()) {
+                $body .= $part;
+            }
+
+            static::assertRegExp("/name=\"name\"[\r\n]+The name[\r\n]+--/", $body);
+            static::assertRegExp("/name=\"tag1\"[\r\n]+12345[\r\n]+--/", $body);
+            static::assertRegExp("/name=\"foo1\"[\r\n]+true[\r\n]+--/", $body);
+            static::assertRegExp("/name=\"foo2\"[\r\n]+false[\r\n]+--/", $body);
+
+            $fieldsAllFound = true;
+
+            return new MockResponse(
+                (string) json_encode([
+                    'error' => null,
+                ])
+            );
+        });
+
+        $client->request('the api', 'the method', [
+            'name' => 'The name',
+            'tag1' => 12345,
+            'foo1' => true,
+            'foo2' => false,
+        ]);
+
+        static::assertTrue($fieldsAllFound, 'Fields "name", "tag1", "foo1", and "foo2" were not all founds in the request body.');
+    }
 }
