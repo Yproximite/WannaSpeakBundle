@@ -2,8 +2,6 @@
 
 Symfony bundle for the Wannaspeak API (http://fr.wannaspeak.com/)
 
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/bfac8ac4-0f50-408d-8652-4b36738f94ee/small.png)](https://insight.sensiolabs.com/projects/bfac8ac4-0f50-408d-8652-4b36738f94ee) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Yproximite/WannaSpeakBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Yproximite/WannaSpeakBundle/?branch=master)
-
 ## Installation
 
 ```bash
@@ -21,8 +19,8 @@ return [
 
 ## Configuration
 
-``` yaml
-// config/packages/wanna_speak.yml:
+```yaml
+# config/packages/wanna_speak.yml:
 wanna_speak:
     api:
         base_uri: 'https://www-2.wannaspeak.com/api/api.php' # default
