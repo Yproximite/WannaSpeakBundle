@@ -6,7 +6,7 @@ namespace Yproximite\WannaSpeakBundle\Api;
 
 interface StatisticsInterface
 {
-    public const API = 'stats';
+    public const API = 'stat';
 
     /**
      * TODO: maybe rename this method?

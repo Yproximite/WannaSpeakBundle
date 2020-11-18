@@ -99,7 +99,7 @@ class CallTrackingsSpec extends ObjectBehavior
     {
         $client
             ->request(CallTrackingsInterface::API, 'modify', [
-                'did'       => '33176280XXX',
+                'did'      => '33176280XXX',
                 'stopdate' => '2020-11-19',
             ])
             ->shouldBeCalled();
