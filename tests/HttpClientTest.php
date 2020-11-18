@@ -10,6 +10,7 @@ use Yproximite\WannaSpeakBundle\Exception\Api\AuthFailedException;
 use Yproximite\WannaSpeakBundle\Exception\Api\BadAccountException;
 use Yproximite\WannaSpeakBundle\Exception\Api\CantUseDidAsDestinationException;
 use Yproximite\WannaSpeakBundle\Exception\Api\DidAlreadyReservedException;
+use Yproximite\WannaSpeakBundle\Exception\Api\DidNotExistsOrNotOwnedException;
 use Yproximite\WannaSpeakBundle\Exception\Api\MethodNotImplementedException;
 use Yproximite\WannaSpeakBundle\Exception\Api\MissingArgumentsException;
 use Yproximite\WannaSpeakBundle\Exception\Api\NoDidAvailableForRegionException;
@@ -152,7 +153,7 @@ class HttpClientTest extends TestCase
         $client->request('the api', 'the method');
     }
 
-    public function testRequestWithCode407(): void
+    public function testRequestWithCode407DidAlreadyReserved(): void
     {
         $this->expectExceptionObject(
             new DidAlreadyReservedException('DID already reserved or not tested')
@@ -163,6 +164,42 @@ class HttpClientTest extends TestCase
                 'error' => [
                     'nb'  => 407,
                     'txt' => 'DID already reserved or not tested',
+                ],
+            ])
+        ));
+
+        $client->request('the api', 'the method');
+    }
+
+    public function testRequestWithCode407DidNotExists(): void
+    {
+        $this->expectExceptionObject(
+            new DidNotExistsOrNotOwnedException('DID not exists or not owned')
+        );
+
+        $client = $this->createHttpClient(new MockResponse(
+            (string) json_encode([
+                'error' => [
+                    'nb'  => 407,
+                    'txt' => 'DID not exists or not owned',
+                ],
+            ])
+        ));
+
+        $client->request('the api', 'the method');
+    }
+
+    public function testRequestWithCode407Unknown(): void
+    {
+        $this->expectExceptionObject(
+            new UnknownException('???')
+        );
+
+        $client = $this->createHttpClient(new MockResponse(
+            (string) json_encode([
+                'error' => [
+                    'nb'  => 407,
+                    'txt' => '???',
                 ],
             ])
         ));

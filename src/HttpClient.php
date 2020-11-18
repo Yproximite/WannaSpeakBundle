@@ -119,7 +119,14 @@ class HttpClient implements HttpClientInterface
                     case static::CODE_NO_DID_AVAILABLE_FOR_REGION:
                         throw new Api\NoDidAvailableForRegionException($message);
                     case static::CODE_DID_ALREADY_RESERVED:
-                        throw new Api\DidAlreadyReservedException($message);
+                    case static::CODE_DID_NOT_EXISTS_OR_NOT_OWNED:
+                        if ('DID not exists or not owned' === $message) {
+                            throw new Api\DidNotExistsOrNotOwnedException($message);
+                        } elseif ('DID already reserved or not tested' === $message) {
+                            throw new Api\DidAlreadyReservedException($message);
+                        }
+
+                        throw new Api\UnknownException($message);
                     case static::CODE_CANT_USE_DID_AS_DESTINATION:
                         throw new Api\CantUseDidAsDestinationException($message);
                     case static::CODE_MISSING_ARGUMENTS:
