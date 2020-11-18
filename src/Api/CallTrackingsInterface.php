@@ -10,14 +10,32 @@ interface CallTrackingsInterface
 
     public const NUMBERS_LIST      = 'list';
     public const NUMBERS_AVAILABLE = 'available';
+    public const NUMBERS_DELETED   = 'deleted';
 
-    public function getNumbers(?string $method = null);
+    /**
+     * @param array<string,mixed> $additionalArguments
+     *
+     * @return list<string>
+     */
+    public function getNumbers(?string $method = null, array $additionalArguments = []): array;
 
-    public function add();
+    /**
+     * @param array<string,mixed> $additionalArguments
+     */
+    public function add(string $phoneDid, string $phoneDestination, string $name, array $additionalArguments = []): void;
 
-    public function modify();
+    /**
+     * @param array<string,mixed> $additionalArguments
+     */
+    public function modify(string $phoneDid, array $additionalArguments = []): void;
 
-    public function delete();
+    /**
+     * @param array<string,mixed> $additionalArguments
+     */
+    public function delete(string $phoneDid, array $additionalArguments = []): void;
 
-    public function expires();
+    /**
+     * @param array<string,mixed> $additionalArguments
+     */
+    public function expires(string $phoneDid, \DateTimeInterface $dateTime, array $additionalArguments = []): void;
 }
