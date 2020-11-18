@@ -60,8 +60,8 @@ class CallTrackings implements CallTrackingsInterface
     public function expires(string $phoneDid, \DateTimeInterface $when, array $additionalArguments = []): void
     {
         $arguments = array_merge($additionalArguments, [
-            'did'       => $phoneDid,
-            'stoppdate' => $when->format('Y-m-d'),
+            'did'      => $phoneDid,
+            'stopdate' => $when->format('Y-m-d'),
         ]);
 
         $this->client->request(self::API, 'modify', $arguments);
