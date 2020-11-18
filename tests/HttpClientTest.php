@@ -6,10 +6,17 @@ namespace Yproximite\WannaSpeakBundle\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\Response\MockResponse;
-use Yproximite\WannaSpeakBundle\Api\CallTrackingsInterface;
+use Yproximite\WannaSpeakBundle\Exception\Api\AuthFailedException;
+use Yproximite\WannaSpeakBundle\Exception\Api\BadAccountException;
+use Yproximite\WannaSpeakBundle\Exception\Api\CantUseDidAsDestinationException;
+use Yproximite\WannaSpeakBundle\Exception\Api\DidAlreadyReservedException;
+use Yproximite\WannaSpeakBundle\Exception\Api\MethodNotImplementedException;
+use Yproximite\WannaSpeakBundle\Exception\Api\MissingArgumentsException;
+use Yproximite\WannaSpeakBundle\Exception\Api\NoDidAvailableForRegionException;
+use Yproximite\WannaSpeakBundle\Exception\Api\UnknownApiException;
+use Yproximite\WannaSpeakBundle\Exception\Api\UnknownException;
+use Yproximite\WannaSpeakBundle\Exception\Api\UnknownMethodException;
 use Yproximite\WannaSpeakBundle\Exception\TestModeException;
-use Yproximite\WannaSpeakBundle\Exception\WannaSpeakApiException;
-use Yproximite\WannaSpeakBundle\HttpClientInterface;
 
 class HttpClientTest extends TestCase
 {
@@ -21,7 +28,7 @@ class HttpClientTest extends TestCase
 
         $client = $this->createHttpClient(null, true);
 
-        $client->request(CallTrackingsInterface::API, CallTrackingsInterface::NUMBERS_AVAILABLE);
+        $client->request('the api', 'the method');
     }
 
     public function testRequestWithoutError(): void
@@ -32,7 +39,7 @@ class HttpClientTest extends TestCase
             ])
         ));
 
-        $response = $client->request(CallTrackingsInterface::API, CallTrackingsInterface::NUMBERS_AVAILABLE);
+        $response = $client->request('the api', 'the method');
 
         static::assertSame(['error' => null], $response->toArray());
     }
@@ -50,7 +57,7 @@ class HttpClientTest extends TestCase
             ])
         ));
 
-        $response = $client->request(CallTrackingsInterface::API, CallTrackingsInterface::NUMBERS_AVAILABLE);
+        $response = $client->request('the api', 'the method');
 
         static::assertSame(['error' => ['nb' => 200]], $response->toArray());
     }
@@ -58,7 +65,7 @@ class HttpClientTest extends TestCase
     public function testRequestWithCode401(): void
     {
         $this->expectExceptionObject(
-            WannaSpeakApiException::create(HttpClientInterface::CODE_AUTH_FAILED, 'Auth Failed')
+            new AuthFailedException('Auth Failed')
         );
 
         $client = $this->createHttpClient(new MockResponse(
@@ -70,13 +77,13 @@ class HttpClientTest extends TestCase
             ])
         ));
 
-        $client->request(CallTrackingsInterface::API, CallTrackingsInterface::NUMBERS_AVAILABLE);
+        $client->request('the api', 'the method');
     }
 
     public function testRequestWithCode403(): void
     {
         $this->expectExceptionObject(
-            WannaSpeakApiException::create(HttpClientInterface::CODE_BAD_ACCOUNT, 'Bad account ID or not Call tracking enabled')
+            new BadAccountException('Bad account ID or not Call tracking enabled')
         );
 
         $client = $this->createHttpClient(new MockResponse(
@@ -88,14 +95,15 @@ class HttpClientTest extends TestCase
             ])
         ));
 
-        $client->request(CallTrackingsInterface::API, CallTrackingsInterface::NUMBERS_AVAILABLE);
+        $client->request('the api', 'the method');
     }
 
     public function testRequestWithCode404(): void
     {
         $this->expectExceptionObject(
-            WannaSpeakApiException::create(HttpClientInterface::CODE_UNKNOWN_METHOD, 'Unknown method')
+            new UnknownMethodException('Unknown method')
         );
+
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
                 'error' => [
@@ -105,14 +113,15 @@ class HttpClientTest extends TestCase
             ])
         ));
 
-        $client->request(CallTrackingsInterface::API, CallTrackingsInterface::NUMBERS_AVAILABLE);
+        $client->request('the api', 'the method');
     }
 
     public function testRequestWithCode405(): void
     {
         $this->expectExceptionObject(
-            WannaSpeakApiException::create(HttpClientInterface::CODE_METHOD_NOT_IMPLEMENTED, 'Method not yet implemented')
+            new MethodNotImplementedException('Method not yet implemented')
         );
+
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
                 'error' => [
@@ -122,14 +131,15 @@ class HttpClientTest extends TestCase
             ])
         ));
 
-        $client->request(CallTrackingsInterface::API, CallTrackingsInterface::NUMBERS_AVAILABLE);
+        $client->request('the api', 'the method');
     }
 
     public function testRequestWithCode406(): void
     {
         $this->expectExceptionObject(
-            WannaSpeakApiException::create(HttpClientInterface::CODE_NO_DID_AVAILABLE_FOR_REGION, 'NO DID AVAILABLE FOR THAT REGION')
+            new NoDidAvailableForRegionException('NO DID AVAILABLE FOR THAT REGION')
         );
+
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
                 'error' => [
@@ -139,13 +149,31 @@ class HttpClientTest extends TestCase
             ])
         ));
 
-        $client->request(CallTrackingsInterface::API, CallTrackingsInterface::NUMBERS_AVAILABLE);
+        $client->request('the api', 'the method');
+    }
+
+    public function testRequestWithCode407(): void
+    {
+        $this->expectExceptionObject(
+            new DidAlreadyReservedException('DID already reserved or not tested')
+        );
+
+        $client = $this->createHttpClient(new MockResponse(
+            (string) json_encode([
+                'error' => [
+                    'nb'  => 407,
+                    'txt' => 'DID already reserved or not tested',
+                ],
+            ])
+        ));
+
+        $client->request('the api', 'the method');
     }
 
     public function testRequestWithCode410(): void
     {
         $this->expectExceptionObject(
-            WannaSpeakApiException::create(HttpClientInterface::CODE_CANT_USE_DID_AS_DESTINATION, "can't use DID as destination")
+            new CantUseDidAsDestinationException("can't use DID as destination")
         );
 
         $client = $this->createHttpClient(new MockResponse(
@@ -156,13 +184,14 @@ class HttpClientTest extends TestCase
                 ],
             ])
         ));
-        $client->request(CallTrackingsInterface::API, CallTrackingsInterface::NUMBERS_AVAILABLE);
+
+        $client->request('the api', 'the method');
     }
 
     public function testRequestWithCode500(): void
     {
         $this->expectExceptionObject(
-            WannaSpeakApiException::create(HttpClientInterface::CODE_MISSING_ARGUMENTS, 'Missing arguments (...)')
+            new MissingArgumentsException('Missing arguments (...)')
         );
 
         $client = $this->createHttpClient(new MockResponse(
@@ -174,13 +203,13 @@ class HttpClientTest extends TestCase
             ])
         ));
 
-        $client->request(CallTrackingsInterface::API, CallTrackingsInterface::NUMBERS_AVAILABLE);
+        $client->request('the api', 'the method');
     }
 
     public function testRequestWithCode501(): void
     {
         $this->expectExceptionObject(
-            WannaSpeakApiException::create(HttpClientInterface::CODE_UNKNOWN_API, 'Unknown API')
+            new UnknownApiException('Unknown API')
         );
 
         $client = $this->createHttpClient(new MockResponse(
@@ -192,6 +221,24 @@ class HttpClientTest extends TestCase
             ])
         ));
 
-        $client->request(CallTrackingsInterface::API, CallTrackingsInterface::NUMBERS_AVAILABLE);
+        $client->request('the api', 'the method');
+    }
+
+    public function testRequestWithUnknownCode(): void
+    {
+        $this->expectExceptionObject(
+            new UnknownException('???')
+        );
+
+        $client = $this->createHttpClient(new MockResponse(
+            (string) json_encode([
+                'error' => [
+                    'nb'  => 999,
+                    'txt' => '???',
+                ],
+            ])
+        ));
+
+        $client->request('the api', 'the method');
     }
 }

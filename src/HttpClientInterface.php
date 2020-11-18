@@ -15,6 +15,7 @@ interface HttpClientInterface
     public const CODE_UNKNOWN_METHOD              = 404;
     public const CODE_METHOD_NOT_IMPLEMENTED      = 405;
     public const CODE_NO_DID_AVAILABLE_FOR_REGION = 406;
+    public const CODE_DID_ALREADY_RESERVED        = 407;
     public const CODE_CANT_USE_DID_AS_DESTINATION = 410;
     public const CODE_MISSING_ARGUMENTS           = 500;
     public const CODE_UNKNOWN_API                 = 501;
@@ -25,5 +26,5 @@ interface HttpClientInterface
      *
      * @throws TestModeException
      */
-    public function request(string $api, string $method, array $arguments = []): ResponseInterface;
+    public function request(string $api, string $method, array $additionalArguments = []): ResponseInterface;
 }
