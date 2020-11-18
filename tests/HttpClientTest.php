@@ -65,9 +65,7 @@ class HttpClientTest extends TestCase
 
     public function testRequestWithCode401(): void
     {
-        $this->expectExceptionObject(
-            new AuthFailedException('Auth Failed')
-        );
+        $this->expectException(AuthFailedException::class);
 
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
@@ -83,9 +81,7 @@ class HttpClientTest extends TestCase
 
     public function testRequestWithCode403(): void
     {
-        $this->expectExceptionObject(
-            new BadAccountException('Bad account ID or not Call tracking enabled')
-        );
+        $this->expectException(BadAccountException::class);
 
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
@@ -101,9 +97,7 @@ class HttpClientTest extends TestCase
 
     public function testRequestWithCode404(): void
     {
-        $this->expectExceptionObject(
-            new UnknownMethodException('Unknown method')
-        );
+        $this->expectException(UnknownMethodException::class);
 
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
@@ -119,9 +113,7 @@ class HttpClientTest extends TestCase
 
     public function testRequestWithCode405(): void
     {
-        $this->expectExceptionObject(
-            new MethodNotImplementedException('Method not yet implemented')
-        );
+        $this->expectException(MethodNotImplementedException::class);
 
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
@@ -137,9 +129,7 @@ class HttpClientTest extends TestCase
 
     public function testRequestWithCode406(): void
     {
-        $this->expectExceptionObject(
-            new NoDidAvailableForRegionException('NO DID AVAILABLE FOR THAT REGION')
-        );
+        $this->expectException(NoDidAvailableForRegionException::class);
 
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
@@ -155,9 +145,7 @@ class HttpClientTest extends TestCase
 
     public function testRequestWithCode407DidAlreadyReserved(): void
     {
-        $this->expectExceptionObject(
-            new DidAlreadyReservedException('DID already reserved or not tested')
-        );
+        $this->expectException(DidAlreadyReservedException::class);
 
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
@@ -173,9 +161,7 @@ class HttpClientTest extends TestCase
 
     public function testRequestWithCode407DidNotExists(): void
     {
-        $this->expectExceptionObject(
-            new DidNotExistsOrNotOwnedException('DID not exists or not owned')
-        );
+        $this->expectException(DidNotExistsOrNotOwnedException::class);
 
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
@@ -191,9 +177,7 @@ class HttpClientTest extends TestCase
 
     public function testRequestWithCode407Unknown(): void
     {
-        $this->expectExceptionObject(
-            new UnknownException('???')
-        );
+        $this->expectException(UnknownException::class);
 
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
@@ -209,9 +193,7 @@ class HttpClientTest extends TestCase
 
     public function testRequestWithCode410(): void
     {
-        $this->expectExceptionObject(
-            new CantUseDidAsDestinationException("can't use DID as destination")
-        );
+        $this->expectException(CantUseDidAsDestinationException::class);
 
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
@@ -227,9 +209,7 @@ class HttpClientTest extends TestCase
 
     public function testRequestWithCode500(): void
     {
-        $this->expectExceptionObject(
-            new MissingArgumentsException('Missing arguments (...)')
-        );
+        $this->expectException(MissingArgumentsException::class);
 
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
@@ -245,9 +225,7 @@ class HttpClientTest extends TestCase
 
     public function testRequestWithCode501(): void
     {
-        $this->expectExceptionObject(
-            new UnknownApiException('Unknown API')
-        );
+        $this->expectException(UnknownApiException::class);
 
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([
@@ -263,9 +241,7 @@ class HttpClientTest extends TestCase
 
     public function testRequestWithUnknownCode(): void
     {
-        $this->expectExceptionObject(
-            new UnknownException('???')
-        );
+        $this->expectException(UnknownException::class);
 
         $client = $this->createHttpClient(new MockResponse(
             (string) json_encode([

@@ -8,7 +8,8 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Yproximite\WannaSpeakBundle\Api\CallTrackings;
 use Yproximite\WannaSpeakBundle\Api\CallTrackingsInterface;
-use Yproximite\WannaSpeakBundle\Exception\Api;
+use Yproximite\WannaSpeakBundle\Exception\Api\DidAlreadyReservedException;
+use Yproximite\WannaSpeakBundle\Exception\Api\DidNotExistsOrNotOwnedException;
 use Yproximite\WannaSpeakBundle\Tests\HttpClientTestTrait;
 
 class CallTrackingsTest extends TestCase
@@ -155,9 +156,7 @@ class CallTrackingsTest extends TestCase
 
     public function testAddWhenDidIsAlreadyUsed(): void
     {
-        $this->expectExceptionObject(
-            new Api\DidAlreadyReservedException('DID already reserved or not tested')
-        );
+        $this->expectException(DidAlreadyReservedException::class);
 
         $callTrackings = new CallTrackings(
             $this->createHttpClient(new MockResponse(
@@ -193,7 +192,7 @@ class CallTrackingsTest extends TestCase
 
     public function testModifyUnknown(): void
     {
-        $this->expectExceptionObject(new Api\DidNotExistsOrNotOwnedException('DID not exists or not owned'));
+        $this->expectException(DidNotExistsOrNotOwnedException::class);
 
         $callTrackings = new CallTrackings(
             $this->createHttpClient(new MockResponse(
@@ -229,7 +228,7 @@ class CallTrackingsTest extends TestCase
 
     public function testDeleteUnknown(): void
     {
-        $this->expectExceptionObject(new Api\DidNotExistsOrNotOwnedException('DID not exists or not owned'));
+        $this->expectException(DidNotExistsOrNotOwnedException::class);
 
         $callTrackings = new CallTrackings(
             $this->createHttpClient(new MockResponse(
@@ -265,7 +264,7 @@ class CallTrackingsTest extends TestCase
 
     public function testExpiresUnknown(): void
     {
-        $this->expectExceptionObject(new Api\DidNotExistsOrNotOwnedException('DID not exists or not owned'));
+        $this->expectException(DidNotExistsOrNotOwnedException::class);
 
         $callTrackings = new CallTrackings(
             $this->createHttpClient(new MockResponse(
