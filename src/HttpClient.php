@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Yproximite\WannaSpeakBundle;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use Symfony\Component\HttpClient\ScopingHttpClient;
 use Symfony\Component\Mime\Part\Multipart\FormDataPart;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Yproximite\WannaSpeakBundle\Exception\Api;
@@ -14,26 +17,33 @@ class HttpClient implements HttpClientInterface
 {
     private $accountId;
     private $secretKey;
-    private $baseUri;
     private $test;
     private $client;
+    private $logger;
 
     public function __construct(
         string $accountId,
         string $secretKey,
         string $baseUri,
         bool $test,
-        \Symfony\Contracts\HttpClient\HttpClientInterface $client
+        \Symfony\Contracts\HttpClient\HttpClientInterface $client,
+        ?LoggerInterface $logger = null
     ) {
         $this->accountId = $accountId;
         $this->secretKey = $secretKey;
-        $this->baseUri   = $baseUri;
         $this->test      = $test;
-        $this->client    = $client;
+        $this->client    = ScopingHttpClient::forBaseUri($client, $baseUri);
+        $this->logger    = $logger ?? new NullLogger();
     }
 
     public function request(string $api, string $method, array $arguments = []): ResponseInterface
     {
+        $this->logger->info('[wanna-speak] Requesting WannaSpeak API {api} with method {method}.', [
+            'api'       => $api,
+            'method'    => $method,
+            'arguments' => $arguments,
+        ]);
+
         if ($this->test) {
             throw new TestModeException();
         }
