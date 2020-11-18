@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yproximite\WannaSpeakBundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
@@ -34,7 +36,7 @@ abstract class AbstractWannaSpeakBundleTestKernel extends Kernel
             'test'   => true,
             'router' => [
                 'utf8' => true,
-            ]
+            ],
         ]);
 
         $containerBuilder->loadFromExtension('wanna_speak', [
@@ -48,7 +50,6 @@ abstract class AbstractWannaSpeakBundleTestKernel extends Kernel
         ]);
     }
 }
-
 
 if (AbstractWannaSpeakBundleTestKernel::VERSION_ID >= 50100) { // @phpstan-ignore-line
     class WannaSpeakBundleTestKernel extends AbstractWannaSpeakBundleTestKernel

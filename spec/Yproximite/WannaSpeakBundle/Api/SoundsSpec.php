@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace spec\Yproximite\WannaSpeakBundle\Api;
 
 use PhpSpec\ObjectBehavior;
@@ -10,7 +12,7 @@ use Yproximite\WannaSpeakBundle\HttpClientInterface;
 
 class SoundsSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType(Sounds::class);
     }

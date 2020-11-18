@@ -38,5 +38,4 @@ class SoundsTest extends TestCase
 
         $sounds->delete();
     }
-
 }

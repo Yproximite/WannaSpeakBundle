@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yproximite\WannaSpeakBundle\Tests;
 
 use Symfony\Component\HttpClient\MockHttpClient;

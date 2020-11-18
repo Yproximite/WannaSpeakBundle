@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yproximite\WannaSpeakBundle\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Test\TestContainer;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class BundleTest extends TestCase
 {
