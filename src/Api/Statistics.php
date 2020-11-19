@@ -19,6 +19,6 @@ class Statistics implements StatisticsInterface
     {
         $response = $this->client->request(self::API, 'did', []);
 
-        return $response->toArray();
+        return $response->toArray(); // @phpstan-ignore-line
     }
 }

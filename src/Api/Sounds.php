@@ -20,7 +20,7 @@ class Sounds implements SoundsInterface
     {
         $response = $this->client->request(self::API, 'list', $additionalArguments);
 
-        return $response->toArray();
+        return $response->toArray(); // @phpstan-ignore-line
     }
 
     public function upload($file, string $name, array $additionalArguments = []): array
@@ -38,7 +38,7 @@ class Sounds implements SoundsInterface
 
         $response = $this->client->request(self::API, 'upload', $arguments);
 
-        return $response->toArray();
+        return $response->toArray(); // @phpstan-ignore-line
     }
 
     public function delete(string $name, array $additionalArguments = []): array
@@ -49,6 +49,6 @@ class Sounds implements SoundsInterface
 
         $response = $this->client->request(self::API, 'delete', $arguments);
 
-        return $response->toArray();
+        return $response->toArray(); // @phpstan-ignore-line
     }
 }

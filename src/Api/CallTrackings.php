@@ -25,7 +25,7 @@ class CallTrackings implements CallTrackingsInterface
 
         $response = $this->client->request(self::API, $method, $additionalArguments);
 
-        return $response->toArray();
+        return $response->toArray(); // @phpstan-ignore-line
     }
 
     public function add(string $phoneDid, string $phoneDestination, string $name, array $additionalArguments = []): array
@@ -38,7 +38,7 @@ class CallTrackings implements CallTrackingsInterface
 
         $response = $this->client->request(self::API, 'add', $arguments);
 
-        return $response->toArray();
+        return $response->toArray(); // @phpstan-ignore-line
     }
 
     public function modify(string $phoneDid, array $additionalArguments = []): array
@@ -49,7 +49,7 @@ class CallTrackings implements CallTrackingsInterface
 
         $response = $this->client->request(self::API, 'modify', $arguments);
 
-        return $response->toArray();
+        return $response->toArray(); // @phpstan-ignore-line
     }
 
     public function delete(string $phoneDid, array $additionalArguments = []): array
@@ -60,7 +60,7 @@ class CallTrackings implements CallTrackingsInterface
 
         $response = $this->client->request(self::API, 'delete', $arguments);
 
-        return $response->toArray();
+        return $response->toArray(); // @phpstan-ignore-line
     }
 
     public function expires(string $phoneDid, \DateTimeInterface $when, array $additionalArguments = []): array
@@ -72,6 +72,6 @@ class CallTrackings implements CallTrackingsInterface
 
         $response = $this->client->request(self::API, 'modify', $arguments);
 
-        return $response->toArray();
+        return $response->toArray(); // @phpstan-ignore-line
     }
 }

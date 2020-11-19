@@ -15,7 +15,7 @@ interface CallTrackingsInterface
     /**
      * @param array<string,mixed> $additionalArguments
      *
-     * @return array{ error: null, data: list<string> | list<array<string,mixed>> }
+     * @return array{ error: null, data: array{ dids?: list<string> | list<array<string,mixed>> } }
      */
     public function getNumbers(?string $method = null, array $additionalArguments = []): array;
 

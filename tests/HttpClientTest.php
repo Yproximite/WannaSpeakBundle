@@ -276,7 +276,7 @@ class HttpClientTest extends TestCase
     {
         $fieldsAllFound = false;
 
-        $client = $this->createHttpClient(static function (string $method, string $url, array $options) use (&$fieldsAllFound) {
+        $client = $this->createHttpClient(static function (string $method, string $url, array $options) use (&$fieldsAllFound): MockResponse {
             $body = '';
             while ($part = $options['body']()) {
                 $body .= $part;

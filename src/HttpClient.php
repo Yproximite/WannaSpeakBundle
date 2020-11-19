@@ -58,6 +58,7 @@ class HttpClient implements HttpClientInterface
     }
 
     /**
+     * @param array<string,mixed> $additionalArguments Additional WannaSpeak request arguments
      * @throws WannaSpeakApiExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
@@ -126,7 +127,7 @@ class HttpClient implements HttpClientInterface
             }
 
             if (is_string($responseData['error'])) {
-                throw new UnknownException($responseData['error']);
+                throw WannaSpeakApiException::create(-1, $responseData['error']);
             }
 
             if (is_array($responseData['error']) && array_key_exists('nb', $responseData['error'])) {

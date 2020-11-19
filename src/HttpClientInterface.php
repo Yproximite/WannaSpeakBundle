@@ -10,7 +10,7 @@ use Yproximite\WannaSpeakBundle\Exception\TestModeException;
 interface HttpClientInterface
 {
     /**
-     * @param array<string,mixed> $arguments Additional WannaSpeak request arguments
+     * @param array<string,mixed> $additionalArguments Additional WannaSpeak request arguments
      *
      * @throws TestModeException
      */

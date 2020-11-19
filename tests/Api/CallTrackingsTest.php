@@ -150,10 +150,7 @@ class CallTrackingsTest extends TestCase
             ))
         );
 
-        static::assertSame(
-            $responseData,
-            $callTrackings->add('33176280XXX', '33700XXYYZZ', 'The calltracking name')
-        );
+        $callTrackings->add('33176280XXX', '33700XXYYZZ', 'The calltracking name');
     }
 
     public function testModify(): void
