@@ -15,6 +15,10 @@ abstract class WannaSpeakApiException extends \RuntimeException implements Wanna
     {
         switch ($statusCode) {
             case 401:
+                if ('Name already Exists' === $message) {
+                    throw new SoundNameAlreadyExistsException($statusCode, $message);
+                }
+
                 throw new AuthFailedException($statusCode, $message);
             case 403:
                 throw new BadAccountException($statusCode, $message);

@@ -14,6 +14,7 @@ use Yproximite\WannaSpeakBundle\Exception\Api\DidNotExistsOrNotOwnedException;
 use Yproximite\WannaSpeakBundle\Exception\Api\MethodNotImplementedException;
 use Yproximite\WannaSpeakBundle\Exception\Api\MissingArgumentsException;
 use Yproximite\WannaSpeakBundle\Exception\Api\NoDidAvailableForRegionException;
+use Yproximite\WannaSpeakBundle\Exception\Api\SoundNameAlreadyExistsException;
 use Yproximite\WannaSpeakBundle\Exception\Api\UnknownApiException;
 use Yproximite\WannaSpeakBundle\Exception\Api\UnknownException;
 use Yproximite\WannaSpeakBundle\Exception\Api\UnknownMethodException;
@@ -72,6 +73,22 @@ class HttpClientTest extends TestCase
                 'error' => [
                     'nb'  => 401,
                     'txt' => 'Auth Failed',
+                ],
+            ])
+        ));
+
+        $client->request('the api', 'the method');
+    }
+
+    public function testRequestWithCode401SoundNameAlreadyExists(): void
+    {
+        $this->expectException(SoundNameAlreadyExistsException::class);
+
+        $client = $this->createHttpClient(new MockResponse(
+            (string) json_encode([
+                'error' => [
+                    'nb'  => 401,
+                    'txt' => 'Name already Exists',
                 ],
             ])
         ));

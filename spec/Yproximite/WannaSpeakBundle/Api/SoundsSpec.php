@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace spec\Yproximite\WannaSpeakBundle\Api;
 
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Yproximite\WannaSpeakBundle\Api\Sounds;
 use Yproximite\WannaSpeakBundle\Api\SoundsInterface;
@@ -24,22 +26,54 @@ class SoundsSpec extends ObjectBehavior
 
     public function it_should_list(HttpClientInterface $client, ResponseInterface $response)
     {
-        $client->request(SoundsInterface::API, 'list', [])->shouldBeCalled();
+        $response->toArray()->shouldBeCalled()->willReturn([]);
+        $client->request(SoundsInterface::API, 'list', [])->shouldBeCalled()->willReturn($response);
 
         $this->list();
     }
 
-    public function it_should_upload(HttpClientInterface $client, ResponseInterface $response)
+    public function it_should_upload_from_path(HttpClientInterface $client, ResponseInterface $response)
     {
-        $client->request(SoundsInterface::API, 'upload', [])->shouldBeCalled();
+        $client
+            ->request(
+                SoundsInterface::API,
+                'upload',
+                Argument::that(function ($args) {
+                    return $args['sound'] instanceof DataPart
+                        && 'the name' === $args['name'];
+                })
+            )
+            ->shouldBeCalled();
 
-        $this->upload();
+        $this->upload(__DIR__.'/../../../../tests/fixtures/callee.mp3', 'the name');
+    }
+
+    public function it_should_upload_from_file(HttpClientInterface $client, ResponseInterface $response)
+    {
+        $client
+            ->request(
+                SoundsInterface::API,
+                'upload',
+                Argument::that(function ($args) {
+                    return $args['sound'] instanceof DataPart
+                        && 'the name' === $args['name'];
+                })
+            )
+            ->shouldBeCalled();
+
+        $file = new \SplFileInfo(__DIR__.'/../../../../tests/fixtures/callee.mp3');
+
+        $this->upload($file, 'the name');
     }
 
     public function it_should_delete(HttpClientInterface $client, ResponseInterface $response)
     {
-        $client->request(SoundsInterface::API, 'delete', [])->shouldBeCalled();
+        $client
+            ->request(SoundsInterface::API, 'delete', [
+                'name' => 'the name',
+            ])
+            ->shouldBeCalled();
 
-        $this->delete();
+        $this->delete('the name');
     }
 }

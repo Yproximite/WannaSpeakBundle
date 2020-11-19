@@ -6,11 +6,23 @@ namespace Yproximite\WannaSpeakBundle\Api;
 
 interface SoundsInterface
 {
-    public const API = 'sounds';
+    public const API = 'sound';
 
-    public function list(/* TODO: implement parameters */);
+    /**
+     * @param array<string,mixed> $additionalArguments
+     *
+     * @return array{ error: null, data: array{ files: list<string>|list<list<string>> } }
+     */
+    public function list(array $additionalArguments = []): array;
 
-    public function upload(/* TODO: implement parameters */);
+    /**
+     * @param \SplFileInfo|string $file
+     * @param array<string,mixed> $additionalArguments
+     */
+    public function upload($file, string $name, array $additionalArguments = []): void;
 
-    public function delete(/* TODO: implement parameters */);
+    /**
+     * @param array<string,mixed> $additionalArguments
+     */
+    public function delete(string $name, array $additionalArguments = []): void;
 }
