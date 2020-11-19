@@ -24,8 +24,9 @@ class StatisticsSpec extends ObjectBehavior
 
     public function it_should_get_stats(HttpClientInterface $client, ResponseInterface $response)
     {
-        $client->request(StatisticsInterface::API, 'did', [])->shouldBeCalled();
+        $response->toArray()->shouldBeCalled()->willReturn([]);
+        $client->request(StatisticsInterface::API, 'did', [])->shouldBeCalled()->willReturn($response);
 
-        $this->did();
+        $this->did()->shouldBe([]);
     }
 }

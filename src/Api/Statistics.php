@@ -15,8 +15,10 @@ class Statistics implements StatisticsInterface
         $this->client = $client;
     }
 
-    public function did(/* TODO: implement parameters */)
+    public function did(array $additionalArguments = []): array
     {
-        $this->client->request(self::API, 'did', []);
+        $response = $this->client->request(self::API, 'did', []);
+
+        return $response->toArray();
     }
 }

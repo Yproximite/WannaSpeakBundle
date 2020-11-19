@@ -20,7 +20,7 @@ class CallTrackingsTest extends TestCase
     {
         $callTrackings = new CallTrackings(
             $this->createHttpClient(new MockResponse(
-                (string) json_encode([
+                (string) json_encode($responseArray = [
                     'error' => null,
                     'data'  => [
                         'dids' => [
@@ -52,39 +52,17 @@ class CallTrackingsTest extends TestCase
             ))
         );
 
-        $numbers = $callTrackings->getNumbers();
-
-        static::assertSame([
-            [
-                'did'            => '3323098XXXX',
-                'destination'    => '3324333XXXX',
-                'name'           => 'The Name',
-                'customerid'     => null,
-                'tag1'           => 'tag 1',
-                'tag2'           => 'tag 2',
-                'tag3'           => '',
-                'tag4'           => '',
-                'tag5'           => '',
-                'tag6'           => '',
-                'tag7'           => '',
-                'tag8'           => '',
-                'tag9'           => '',
-                'tag10'          => '',
-                'assigneddate'   => '2016-11-18 11:36:50',
-                'startdate'      => '2019-10-28 00:00:00',
-                'enddate'        => '0000-00-00 00:00:00',
-                'email'          => '',
-                'sms'            => '',
-                'emailcondition' => '0',
-            ],
-        ], $numbers);
+        static::assertSame(
+            $responseArray,
+            $callTrackings->getNumbers()
+        );
     }
 
     public function testGetNumbersAvailable(): void
     {
         $callTrackings = new CallTrackings(
             $this->createHttpClient(new MockResponse(
-                (string) json_encode([
+                (string) json_encode($responseArray = [
                     'error' => null,
                     'data'  => [
                         'dids' => [
@@ -96,16 +74,17 @@ class CallTrackingsTest extends TestCase
             ))
         );
 
-        $numbers = $callTrackings->getNumbers(CallTrackingsInterface::NUMBERS_AVAILABLE);
-
-        static::assertSame(['33176280XXX', '33178903XXX'], $numbers);
+        static::assertSame(
+            $responseArray,
+            $callTrackings->getNumbers(CallTrackingsInterface::NUMBERS_AVAILABLE)
+        );
     }
 
     public function testGetNumbersDeleted(): void
     {
         $callTrackings = new CallTrackings(
             $this->createHttpClient(new MockResponse(
-                (string) json_encode([
+                (string) json_encode($responseArray = [
                     'error' => null,
                     'data'  => [
                         'dids' => [
@@ -117,9 +96,10 @@ class CallTrackingsTest extends TestCase
             ))
         );
 
-        $numbers = $callTrackings->getNumbers(CallTrackingsInterface::NUMBERS_AVAILABLE);
-
-        static::assertSame(['33176280XXX', '33178903XXX'], $numbers);
+        static::assertSame(
+            $responseArray,
+            $callTrackings->getNumbers(CallTrackingsInterface::NUMBERS_AVAILABLE)
+        );
     }
 
     public function testGetNumbersWithInvalidMethod(): void
@@ -136,11 +116,9 @@ class CallTrackingsTest extends TestCase
 
     public function testAdd(): void
     {
-        $this->expectNotToPerformAssertions();
-
         $callTrackings = new CallTrackings(
             $this->createHttpClient(new MockResponse(
-                (string) json_encode([
+                (string) json_encode($responseData = [
                     'error' => null,
                     'data'  => [
                         'ok'     => true,
@@ -151,7 +129,10 @@ class CallTrackingsTest extends TestCase
             ))
         );
 
-        $callTrackings->add('33176280XXX', '33700XXYYZZ', 'The calltracking name');
+        static::assertSame(
+            $responseData,
+            $callTrackings->add('33176280XXX', '33700XXYYZZ', 'The calltracking name')
+        );
     }
 
     public function testAddWhenDidIsAlreadyUsed(): void
@@ -160,7 +141,7 @@ class CallTrackingsTest extends TestCase
 
         $callTrackings = new CallTrackings(
             $this->createHttpClient(new MockResponse(
-                (string) json_encode([
+                (string) json_encode($responseData = [
                     'error' => [
                         'nb'  => 407,
                         'txt' => 'DID already reserved or not tested',
@@ -169,16 +150,17 @@ class CallTrackingsTest extends TestCase
             ))
         );
 
-        $callTrackings->add('33176280XXX', '33700XXYYZZ', 'The calltracking name');
+        static::assertSame(
+            $responseData,
+            $callTrackings->add('33176280XXX', '33700XXYYZZ', 'The calltracking name')
+        );
     }
 
     public function testModify(): void
     {
-        $this->expectNotToPerformAssertions();
-
         $callTrackings = new CallTrackings(
             $this->createHttpClient(new MockResponse(
-                (string) json_encode([
+                (string) json_encode($responseData = [
                     'error' => null,
                     'data'  => [
                         'ok' => true,
@@ -187,7 +169,10 @@ class CallTrackingsTest extends TestCase
             ))
         );
 
-        $callTrackings->modify('33176280XXX');
+        static::assertSame(
+            $responseData,
+            $callTrackings->modify('33176280XXX')
+        );
     }
 
     public function testModifyUnknown(): void
@@ -210,11 +195,9 @@ class CallTrackingsTest extends TestCase
 
     public function testDelete(): void
     {
-        $this->expectNotToPerformAssertions();
-
         $callTrackings = new CallTrackings(
             $this->createHttpClient(new MockResponse(
-                (string) json_encode([
+                (string) json_encode($responseData = [
                     'error' => null,
                     'data'  => [
                         'ok' => true,
@@ -223,7 +206,10 @@ class CallTrackingsTest extends TestCase
             ))
         );
 
-        $callTrackings->delete('33176280XXX');
+        static::assertSame(
+            $responseData,
+            $callTrackings->delete('33176280XXX')
+        );
     }
 
     public function testDeleteUnknown(): void
@@ -246,11 +232,9 @@ class CallTrackingsTest extends TestCase
 
     public function testExpires(): void
     {
-        $this->expectNotToPerformAssertions();
-
         $callTrackings = new CallTrackings(
             $this->createHttpClient(new MockResponse(
-                (string) json_encode([
+                (string) json_encode($responseData = [
                     'error' => null,
                     'data'  => [
                         'ok' => true,
@@ -259,7 +243,10 @@ class CallTrackingsTest extends TestCase
             ))
         );
 
-        $callTrackings->expires('33176280XXX', new \DateTime('2020-11-19'));
+        static::assertSame(
+            $responseData,
+            $callTrackings->expires('33176280XXX', new \DateTime('2020-11-19'))
+        );
     }
 
     public function testExpiresUnknown(): void

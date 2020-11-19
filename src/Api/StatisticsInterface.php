@@ -9,7 +9,7 @@ interface StatisticsInterface
     public const API = 'stat';
 
     /**
-     * TODO: maybe rename this method?
+     * @param array<string,mixed> $additionalArguments
      */
-    public function did(/* TODO: implement parameters */);
+    public function did(array $additionalArguments = []): array;
 }

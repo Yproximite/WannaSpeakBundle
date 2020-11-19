@@ -29,11 +29,12 @@ class SoundsSpec extends ObjectBehavior
         $response->toArray()->shouldBeCalled()->willReturn([]);
         $client->request(SoundsInterface::API, 'list', [])->shouldBeCalled()->willReturn($response);
 
-        $this->list();
+        $this->list()->shouldBe([]);
     }
 
     public function it_should_upload_from_path(HttpClientInterface $client, ResponseInterface $response)
     {
+        $response->toArray()->shouldBeCalled()->willReturn([]);
         $client
             ->request(
                 SoundsInterface::API,
@@ -43,13 +44,15 @@ class SoundsSpec extends ObjectBehavior
                         && 'the name' === $args['name'];
                 })
             )
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+            ->willReturn($response);
 
-        $this->upload(__DIR__.'/../../../../tests/fixtures/callee.mp3', 'the name');
+        $this->upload(__DIR__.'/../../../../tests/fixtures/callee.mp3', 'the name')->shouldBe([]);
     }
 
     public function it_should_upload_from_file(HttpClientInterface $client, ResponseInterface $response)
     {
+        $response->toArray()->shouldBeCalled()->willReturn([]);
         $client
             ->request(
                 SoundsInterface::API,
@@ -59,21 +62,24 @@ class SoundsSpec extends ObjectBehavior
                         && 'the name' === $args['name'];
                 })
             )
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+            ->willReturn($response);
 
         $file = new \SplFileInfo(__DIR__.'/../../../../tests/fixtures/callee.mp3');
 
-        $this->upload($file, 'the name');
+        $this->upload($file, 'the name')->shouldBe([]);
     }
 
     public function it_should_delete(HttpClientInterface $client, ResponseInterface $response)
     {
+        $response->toArray()->shouldBeCalled()->willReturn([]);
         $client
             ->request(SoundsInterface::API, 'delete', [
                 'name' => 'the name',
             ])
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+            ->willReturn($response);
 
-        $this->delete('the name');
+        $this->delete('the name')->shouldBe([]);
     }
 }

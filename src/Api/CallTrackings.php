@@ -25,10 +25,10 @@ class CallTrackings implements CallTrackingsInterface
 
         $response = $this->client->request(self::API, $method, $additionalArguments);
 
-        return $response->toArray()['data']['dids'] ?? [];
+        return $response->toArray();
     }
 
-    public function add(string $phoneDid, string $phoneDestination, string $name, array $additionalArguments = []): void
+    public function add(string $phoneDid, string $phoneDestination, string $name, array $additionalArguments = []): array
     {
         $arguments = array_merge($additionalArguments, [
             'did'         => $phoneDid,
@@ -36,34 +36,42 @@ class CallTrackings implements CallTrackingsInterface
             'name'        => $name,
         ]);
 
-        $this->client->request(self::API, 'add', $arguments);
+        $response = $this->client->request(self::API, 'add', $arguments);
+
+        return $response->toArray();
     }
 
-    public function modify(string $phoneDid, array $additionalArguments = []): void
+    public function modify(string $phoneDid, array $additionalArguments = []): array
     {
         $arguments = array_merge($additionalArguments, [
             'did' => $phoneDid,
         ]);
 
-        $this->client->request(self::API, 'modify', $arguments);
+        $response = $this->client->request(self::API, 'modify', $arguments);
+
+        return $response->toArray();
     }
 
-    public function delete(string $phoneDid, array $additionalArguments = []): void
+    public function delete(string $phoneDid, array $additionalArguments = []): array
     {
         $arguments = array_merge($additionalArguments, [
             'did' => $phoneDid,
         ]);
 
-        $this->client->request(self::API, 'delete', $arguments);
+        $response = $this->client->request(self::API, 'delete', $arguments);
+
+        return $response->toArray();
     }
 
-    public function expires(string $phoneDid, \DateTimeInterface $when, array $additionalArguments = []): void
+    public function expires(string $phoneDid, \DateTimeInterface $when, array $additionalArguments = []): array
     {
         $arguments = array_merge($additionalArguments, [
             'did'      => $phoneDid,
             'stopdate' => $when->format('Y-m-d'),
         ]);
 
-        $this->client->request(self::API, 'modify', $arguments);
+        $response = $this->client->request(self::API, 'modify', $arguments);
+
+        return $response->toArray();
     }
 }

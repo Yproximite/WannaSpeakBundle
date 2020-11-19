@@ -23,7 +23,7 @@ class Sounds implements SoundsInterface
         return $response->toArray();
     }
 
-    public function upload($file, string $name, array $additionalArguments = []): void
+    public function upload($file, string $name, array $additionalArguments = []): array
     {
         /** @var string|false $path */
         $path = is_string($file) ? $file : $file->getRealPath();
@@ -36,15 +36,19 @@ class Sounds implements SoundsInterface
             'name'  => $name,
         ]);
 
-        $this->client->request(self::API, 'upload', $arguments);
+        $response = $this->client->request(self::API, 'upload', $arguments);
+
+        return $response->toArray();
     }
 
-    public function delete(string $name, array $additionalArguments = []): void
+    public function delete(string $name, array $additionalArguments = []): array
     {
         $arguments = array_merge($additionalArguments, [
             'name' => $name,
         ]);
 
-        $this->client->request(self::API, 'delete', $arguments);
+        $response = $this->client->request(self::API, 'delete', $arguments);
+
+        return $response->toArray();
     }
 }

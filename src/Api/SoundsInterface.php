@@ -18,11 +18,15 @@ interface SoundsInterface
     /**
      * @param \SplFileInfo|string $file
      * @param array<string,mixed> $additionalArguments
+     *
+     * @return array{ error: null, data: array{ ok: boolean, name: string } }
      */
-    public function upload($file, string $name, array $additionalArguments = []): void;
+    public function upload($file, string $name, array $additionalArguments = []): array;
 
     /**
      * @param array<string,mixed> $additionalArguments
+     *
+     * @return array{ error: null, data: array{ ok: boolean } }
      */
-    public function delete(string $name, array $additionalArguments = []): void;
+    public function delete(string $name, array $additionalArguments = []): array;
 }

@@ -26,9 +26,10 @@ The whole bundle has been rewritten for the better!
     - `Yproximite\WannaSpeakBundle\Api\StatisticsInterface` for `stats` API
 - All API methods are designed:
     - To use required parameters as WannaSpeak API's required arguments
-    - To use a parameter `$additionalArguments` for WannaSpeak API's optional arguments.
-- Your code can depends of class `WannaSpeak` if you prefer to use one class to rule them all (WannaSpeak APIs)
-- WannaSpeak API error are nicely handled and a specific exception is thrown given the status code, see [Exceptions for the API](./src/Exception/Api)
+    - To use a parameter `$additionalArguments` for WannaSpeak API's optional arguments
+    - To return the plain JSON response and not a specific data from this JSON. It means that `getNumbers()` will now returns `['data' => ['dids' => ['331...']]` instead of `['331...']`
+- Your code can depend on class `WannaSpeak` if you prefer to use one class to rule them all (WannaSpeak APIs)
+- WannaSpeak API error are nicely handled, and a specific exception is thrown given the status code, see [Exceptions for the API](./src/Exception/Api)
 
 ## Configuration
 
@@ -109,17 +110,19 @@ class MyClass
 
     public function myMethod(): void
     {
-        $this->callTrackings->add('phoneDid', 'phoneDest', 'name', [
+        $response = $this->callTrackings->add('phoneDid', 'phoneDest', 'name', [
             'tag1' => '...',
             'tag2' => '...',
             'sms'  => '...',
             'leg1' => '...',
             'leg2' => '...',
         ]);
+        
+        dump($response['error'], $response['data']);
 
-        $this->sounds->list();
+        $response = $this->sounds->list();
 
-        $this->statistics->did(/* ... */); // TODO: this method will maybe be renamed
+        $response = $this->statistics->did(/* ... */); // TODO: this method will maybe be renamed
     }
 }
 ```
