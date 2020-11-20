@@ -80,9 +80,9 @@ class HttpClient implements HttpClientInterface
             $fieldValue = $fields[$fieldKey];
 
             if (true === $fieldValue) {
-                $fieldValue = 'true';
+                $fieldValue = '1';
             } elseif (false === $fieldValue) {
-                $fieldValue = 'false';
+                $fieldValue = '0';
             } elseif (is_int($fieldValue)) {
                 $fieldValue = (string) $fieldValue;
             }

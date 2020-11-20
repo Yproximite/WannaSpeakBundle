@@ -278,14 +278,14 @@ class HttpClientTest extends TestCase
 
         $client = $this->createHttpClient(static function (string $method, string $url, array $options) use (&$fieldsAllFound): MockResponse {
             $body = '';
-            while ($part = $options['body']()) {
+            while ('' !== $part = $options['body']()) {
                 $body .= $part;
             }
 
             static::assertRegExp("/name=\"name\"[\r\n]+The name[\r\n]+--/", $body);
             static::assertRegExp("/name=\"tag1\"[\r\n]+12345[\r\n]+--/", $body);
-            static::assertRegExp("/name=\"foo1\"[\r\n]+true[\r\n]+--/", $body);
-            static::assertRegExp("/name=\"foo2\"[\r\n]+false[\r\n]+--/", $body);
+            static::assertRegExp("/name=\"foo1\"[\r\n]+1[\r\n]+--/", $body);
+            static::assertRegExp("/name=\"foo2\"[\r\n]+0[\r\n]+--/", $body);
 
             $fieldsAllFound = true;
 
