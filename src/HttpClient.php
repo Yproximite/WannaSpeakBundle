@@ -9,7 +9,6 @@ use Psr\Log\NullLogger;
 use Symfony\Component\HttpClient\ScopingHttpClient;
 use Symfony\Component\Mime\Part\Multipart\FormDataPart;
 use Symfony\Contracts\HttpClient\ResponseInterface;
-use Yproximite\WannaSpeakBundle\Exception\Api\UnknownException;
 use Yproximite\WannaSpeakBundle\Exception\Api\WannaSpeakApiException;
 use Yproximite\WannaSpeakBundle\Exception\Api\WannaSpeakApiExceptionInterface;
 use Yproximite\WannaSpeakBundle\Exception\InvalidResponseException;
@@ -59,6 +58,7 @@ class HttpClient implements HttpClientInterface
 
     /**
      * @param array<string,mixed> $additionalArguments Additional WannaSpeak request arguments
+     *
      * @throws WannaSpeakApiExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
