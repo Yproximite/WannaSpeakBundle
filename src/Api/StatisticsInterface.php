@@ -6,39 +6,35 @@ namespace Yproximite\WannaSpeakBundle\Api;
 
 interface StatisticsInterface
 {
+    public const API = 'stat';
+
     /**
-     * We store the platformId in tag1
-     *          and siteId     in tag2
+     * @param array<string,mixed> $additionalArguments
      *
-     * @return mixed
+     * @phpstan-return array{
+     *   error: null,
+     *   data: array{
+     *     calls?: list<array{
+     *       starttime: string,
+     *       source: string,
+     *       dest: string,
+     *       inbound: string,
+     *       customerid: null,
+     *       tag1: string,
+     *       tag2: string,
+     *       tag3: string,
+     *       tag4: string,
+     *       tag5: string,
+     *       tag6: string,
+     *       tag7: string,
+     *       tag8: string,
+     *       tag9: string,
+     *       tag10: string,
+     *       duration: string|int,
+     *       terminatecause: string
+     *     }>
+     *   }
+     * }
      */
-    public function callTracking(
-        string $method,
-        string $name,
-        string $phoneDest,
-        string $phoneDid,
-        string $platformId,
-        string $siteId,
-        bool $callerId = false,
-        ?string $leg1 = null,
-        ?string $leg2 = null,
-        ?string $phoneMobileNumberForMissedCall = null,
-        ?string $smsSenderName = null,
-        ?string $smsCompanyName = null
-    );
-
-    /**
-     * @return mixed
-     */
-    public function callTrackingDelete(string $didPhone);
-
-    /**
-     * @return mixed>
-     */
-    public function callTrackingExpiresAt(string $didPhone, ?\DateTimeInterface $expirationDate = null);
-
-    /**
-     * @return mixed
-     */
-    public function listSounds(int $link = 0);
+    public function did(array $additionalArguments = []): array;
 }

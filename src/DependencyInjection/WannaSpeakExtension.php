@@ -13,7 +13,6 @@ namespace Yproximite\WannaSpeakBundle\DependencyInjection;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class WannaSpeakExtension extends Extension
@@ -23,16 +22,12 @@ class WannaSpeakExtension extends Extension
         $configuration = new Configuration();
         $config        = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.xml');
+        $loader = new Loader\PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.php');
 
         $container->setParameter('wanna_speak.api.account_id', $config['api']['credentials']['account_id']);
         $container->setParameter('wanna_speak.api.secret_key', $config['api']['credentials']['secret_key']);
-        $container->setParameter('wanna_speak.api.base_url', $config['api']['base_url']);
+        $container->setParameter('wanna_speak.api.base_uri', $config['api']['base_uri']);
         $container->setParameter('wanna_speak.api.test', $config['api']['test']);
-
-        if (null !== $config['http_client']) {
-            $container->getDefinition('Yproximite\WannaSpeakBundle\Api\WannaSpeakHttpClient')->replaceArgument(4, new Reference($config['http_client']));
-        }
     }
 }
