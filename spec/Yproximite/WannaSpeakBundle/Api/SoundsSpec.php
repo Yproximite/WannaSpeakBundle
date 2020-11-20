@@ -19,22 +19,30 @@ class SoundsSpec extends ObjectBehavior
         $this->shouldHaveType(Sounds::class);
     }
 
-    public function let(HttpClientInterface $client): void
+    public function let(HttpClientInterface $client, ResponseInterface $response): void
     {
         $this->beConstructedWith($client);
+
+        // Since we are in spec, the response content will always be the, see PHPUnit tests for real response asserting.
+        $response
+            ->toArray()
+            ->willReturn(['error' => null, 'data' => [/* ... */]]);
     }
 
     public function it_should_list(HttpClientInterface $client, ResponseInterface $response)
     {
-        $response->toArray()->shouldBeCalled()->willReturn([]);
-        $client->request(SoundsInterface::API, 'list', [])->shouldBeCalled()->willReturn($response);
+        $client
+            ->request(SoundsInterface::API, 'list', [])
+            ->shouldBeCalled()
+            ->willReturn($response);
 
-        $this->list()->shouldBe([]);
+        $this
+            ->list()
+            ->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 
     public function it_should_upload_from_path(HttpClientInterface $client, ResponseInterface $response)
     {
-        $response->toArray()->shouldBeCalled()->willReturn([]);
         $client
             ->request(
                 SoundsInterface::API,
@@ -47,12 +55,13 @@ class SoundsSpec extends ObjectBehavior
             ->shouldBeCalled()
             ->willReturn($response);
 
-        $this->upload(__DIR__.'/../../../../tests/fixtures/callee.mp3', 'the name')->shouldBe([]);
+        $this
+            ->upload(__DIR__.'/../../../../tests/fixtures/callee.mp3', 'the name')
+            ->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 
     public function it_should_upload_from_file(HttpClientInterface $client, ResponseInterface $response)
     {
-        $response->toArray()->shouldBeCalled()->willReturn([]);
         $client
             ->request(
                 SoundsInterface::API,
@@ -67,12 +76,13 @@ class SoundsSpec extends ObjectBehavior
 
         $file = new \SplFileInfo(__DIR__.'/../../../../tests/fixtures/callee.mp3');
 
-        $this->upload($file, 'the name')->shouldBe([]);
+        $this
+            ->upload($file, 'the name')
+            ->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 
     public function it_should_delete(HttpClientInterface $client, ResponseInterface $response)
     {
-        $response->toArray()->shouldBeCalled()->willReturn([]);
         $client
             ->request(SoundsInterface::API, 'delete', [
                 'name' => 'the name',
@@ -80,6 +90,8 @@ class SoundsSpec extends ObjectBehavior
             ->shouldBeCalled()
             ->willReturn($response);
 
-        $this->delete('the name')->shouldBe([]);
+        $this
+            ->delete('the name')
+            ->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 }

@@ -17,7 +17,7 @@ class Statistics implements StatisticsInterface
 
     public function did(array $additionalArguments = []): array
     {
-        $response = $this->client->request(self::API, 'did', []);
+        $response = $this->client->request(self::API, 'did', $additionalArguments);
 
         return $response->toArray(); // @phpstan-ignore-line
     }

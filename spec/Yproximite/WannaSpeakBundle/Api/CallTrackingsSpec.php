@@ -17,46 +17,64 @@ class CallTrackingsSpec extends ObjectBehavior
         $this->shouldHaveType(CallTrackings::class);
     }
 
-    public function let(HttpClientInterface $client): void
+    public function let(HttpClientInterface $client, ResponseInterface $response): void
     {
         $this->beConstructedWith($client);
+
+        // Since we are in spec, the response content will always be the, see PHPUnit tests for real response asserting.
+        $response
+            ->toArray()
+            ->willReturn(['error' => null, 'data' => [/* ... */]]);
     }
 
     public function it_should_list_all_numbers_by_default(HttpClientInterface $client, ResponseInterface $response): void
     {
-        $response->toArray()->shouldBeCalled()->willReturn([]);
-        $client->request(CallTrackingsInterface::API, 'list', [])->shouldBeCalled()->willReturn($response);
+        $client
+            ->request(CallTrackingsInterface::API, 'list', [])
+            ->shouldBeCalled()
+            ->willReturn($response);
 
-        $this->getNumbers()->shouldBe([]);
+        $this->getNumbers()->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 
     public function it_should_list_all_numbers(HttpClientInterface $client, ResponseInterface $response): void
     {
-        $response->toArray()->shouldBeCalled()->willReturn([]);
-        $client->request(CallTrackingsInterface::API, 'list', [])->shouldBeCalled()->willReturn($response);
+        $client
+            ->request(CallTrackingsInterface::API, 'list', ['tag1' => 'value'])
+            ->shouldBeCalled()
+            ->willReturn($response);
 
-        $this->getNumbers(CallTrackingsInterface::NUMBERS_LIST)->shouldBe([]);
+        $this
+            ->getNumbers(CallTrackingsInterface::NUMBERS_LIST, ['tag1' => 'value'])
+            ->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 
     public function it_should_list_available_numbers(HttpClientInterface $client, ResponseInterface $response): void
     {
-        $response->toArray()->shouldBeCalled()->willReturn([]);
-        $client->request(CallTrackingsInterface::API, 'available', [])->shouldBeCalled()->willReturn($response);
+        $client
+            ->request(CallTrackingsInterface::API, 'available', ['did_pattern' => '331%'])
+            ->shouldBeCalled()
+            ->willReturn($response);
 
-        $this->getNumbers(CallTrackingsInterface::NUMBERS_AVAILABLE)->shouldBe([]);
+        $this
+            ->getNumbers(CallTrackingsInterface::NUMBERS_AVAILABLE, ['did_pattern' => '331%'])
+            ->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 
     public function it_should_list_deleted_numbers(HttpClientInterface $client, ResponseInterface $response): void
     {
-        $response->toArray()->shouldBeCalled()->willReturn([]);
-        $client->request(CallTrackingsInterface::API, 'deleted', [])->shouldBeCalled()->willReturn($response);
+        $client
+            ->request(CallTrackingsInterface::API, 'deleted', [])
+            ->shouldBeCalled()
+            ->willReturn($response);
 
-        $this->getNumbers(CallTrackingsInterface::NUMBERS_DELETED)->shouldBe([]);
+        $this
+            ->getNumbers(CallTrackingsInterface::NUMBERS_DELETED)
+            ->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 
     public function it_should_add(HttpClientInterface $client, ResponseInterface $response): void
     {
-        $response->toArray()->shouldBeCalled()->willReturn([]);
         $client
             ->request(CallTrackingsInterface::API, 'add', [
                 'did'         => '33176280XXX',
@@ -68,30 +86,31 @@ class CallTrackingsSpec extends ObjectBehavior
             ->shouldBeCalled()
             ->willReturn($response);
 
-        $this->add('33176280XXX', '33700XXYYZZ', 'The name', [
-            'tag1' => 'Tag 1',
-            'tag2' => 'Tag 2',
-        ])->shouldBe([]);
+        $this
+            ->add('33176280XXX', '33700XXYYZZ', 'The name', [
+                'tag1' => 'Tag 1',
+                'tag2' => 'Tag 2',
+            ])
+            ->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 
     public function it_should_modify(HttpClientInterface $client, ResponseInterface $response): void
     {
-        $response->toArray()->shouldBeCalled()->willReturn([]);
         $client
             ->request(CallTrackingsInterface::API, 'modify', [
                 'did'  => '33176280XXX',
                 'name' => 'My CallTracking',
             ])
             ->shouldBeCalled()
-            ->willReturn($response)
-        ;
+            ->willReturn($response);
 
-        $this->modify('33176280XXX', ['name' => 'My CallTracking'])->shouldBe([]);
+        $this
+            ->modify('33176280XXX', ['name' => 'My CallTracking'])
+            ->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 
     public function it_should_delete(HttpClientInterface $client, ResponseInterface $response): void
     {
-        $response->toArray()->shouldBeCalled()->willReturn([]);
         $client
             ->request(CallTrackingsInterface::API, 'delete', [
                 'did' => '33176280XXX',
@@ -99,12 +118,13 @@ class CallTrackingsSpec extends ObjectBehavior
             ->shouldBeCalled()
             ->willReturn($response);
 
-        $this->delete('33176280XXX')->shouldBe([]);
+        $this
+            ->delete('33176280XXX')
+            ->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 
     public function it_should_expires(HttpClientInterface $client, ResponseInterface $response): void
     {
-        $response->toArray()->shouldBeCalled()->willReturn([]);
         $client
             ->request(CallTrackingsInterface::API, 'modify', [
                 'did'      => '33176280XXX',
@@ -113,6 +133,8 @@ class CallTrackingsSpec extends ObjectBehavior
             ->shouldBeCalled()
             ->willReturn($response);
 
-        $this->expires('33176280XXX', new \DateTime('2020-11-19'))->shouldBe([]);
+        $this
+            ->expires('33176280XXX', new \DateTime('2020-11-19'))
+            ->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 }
