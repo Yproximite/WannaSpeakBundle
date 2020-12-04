@@ -31,12 +31,16 @@ class Sounds implements SoundsInterface
             throw new \InvalidArgumentException(sprintf('A string or an instance of "SplInfo" is required for uploading the file.'));
         }
 
-        $arguments = array_merge($additionalArguments, [
-            'sound' => DataPart::fromPath($path),
-            'name'  => $name,
-        ]);
-
-        $response = $this->client->request(self::API, 'upload', $arguments);
+        $response = $this->client->request(
+            self::API,
+            'upload',
+            array_merge($additionalArguments, [
+                'name' => $name,
+            ]),
+            [
+                'sound' => DataPart::fromPath($path),
+            ]
+        );
 
         return $response->toArray(); // @phpstan-ignore-line
     }

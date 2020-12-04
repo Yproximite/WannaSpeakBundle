@@ -47,9 +47,9 @@ class SoundsSpec extends ObjectBehavior
             ->request(
                 SoundsInterface::API,
                 'upload',
+                ['name' => 'the name'],
                 Argument::that(function ($args) {
-                    return $args['sound'] instanceof DataPart
-                        && 'the name' === $args['name'];
+                    return $args['sound'] instanceof DataPart;
                 })
             )
             ->shouldBeCalled()
@@ -66,9 +66,9 @@ class SoundsSpec extends ObjectBehavior
             ->request(
                 SoundsInterface::API,
                 'upload',
+                ['name' => 'the name'],
                 Argument::that(function ($args) {
-                    return $args['sound'] instanceof DataPart
-                        && 'the name' === $args['name'];
+                    return $args['sound'] instanceof DataPart;
                 })
             )
             ->shouldBeCalled()

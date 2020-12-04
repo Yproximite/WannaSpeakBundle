@@ -37,19 +37,20 @@ class HttpClient implements HttpClientInterface
         $this->logger    = $logger ?? new NullLogger();
     }
 
-    public function request(string $api, string $method, array $arguments = []): ResponseInterface
+    public function request(string $api, string $method, array $arguments = [], array $body = []): ResponseInterface
     {
         $this->logger->info('[wanna-speak] Requesting WannaSpeak API {api} with method {method}.', [
             'api'       => $api,
             'method'    => $method,
             'arguments' => $arguments,
+            'body'      => $body,
         ]);
 
         if ($this->test) {
             throw new TestModeException();
         }
 
-        $response = $this->doRequest($api, $method, $arguments);
+        $response = $this->doRequest($api, $method, $arguments, $body);
 
         $this->handleResponse($response);
 
@@ -58,6 +59,7 @@ class HttpClient implements HttpClientInterface
 
     /**
      * @param array<string,mixed> $additionalArguments Additional WannaSpeak request arguments
+     * @param array<string,mixed> $body
      *
      * @throws WannaSpeakApiExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
@@ -66,18 +68,44 @@ class HttpClient implements HttpClientInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    private function doRequest(string $api, string $method, array $additionalArguments = []): ResponseInterface
+    private function doRequest(string $api, string $method, array $additionalArguments = [], array $body = []): ResponseInterface
     {
-        $fields = array_merge($additionalArguments, [
+        $query = $this->sanitizeParameters(array_merge($additionalArguments, [
             'id'     => $this->accountId,
             'key'    => $this->getAuthKey(),
             'api'    => $api,
             'method' => $method,
-        ]);
+        ]));
 
-        // Prevent FormDataPart to throw when encountering a non-string value
-        $fields = array_reduce(array_keys($fields), function (array $acc, string $fieldKey) use ($fields) {
-            $fieldValue = $fields[$fieldKey];
+        $body = $this->sanitizeParameters($body);
+
+        $formData = new FormDataPart($body);
+
+        $options = [
+            'query'   => $query,
+            'headers' => $formData->getPreparedHeaders()->toArray(),
+            'body'    => $formData->bodyToIterable(),
+        ];
+
+        return $this->client->request('POST', '', $options);
+    }
+
+    private function getAuthKey(): string
+    {
+        $timeStamp = time();
+
+        return $timeStamp.'-'.md5($this->accountId.$timeStamp.$this->secretKey);
+    }
+
+    /**
+     * @param array<string,mixed> $parameters
+     *
+     * @return array<string,string>
+     */
+    private function sanitizeParameters(array $parameters): array
+    {
+        return array_reduce(array_keys($parameters), static function (array $acc, string $fieldKey) use ($parameters) {
+            $fieldValue = $parameters[$fieldKey];
 
             if (true === $fieldValue) {
                 $fieldValue = '1';
@@ -91,22 +119,6 @@ class HttpClient implements HttpClientInterface
 
             return $acc;
         }, []);
-
-        $formData = new FormDataPart($fields);
-
-        $options = [
-            'headers' => $formData->getPreparedHeaders()->toArray(),
-            'body'    => $formData->bodyToIterable(),
-        ];
-
-        return $this->client->request('POST', '', $options);
-    }
-
-    private function getAuthKey(): string
-    {
-        $timeStamp = time();
-
-        return $timeStamp.'-'.md5($this->accountId.$timeStamp.$this->secretKey);
     }
 
     /**

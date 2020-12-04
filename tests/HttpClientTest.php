@@ -277,15 +277,24 @@ class HttpClientTest extends TestCase
         $fieldsAllFound = false;
 
         $client = $this->createHttpClient(static function (string $method, string $url, array $options) use (&$fieldsAllFound): MockResponse {
+            static::assertSame('9999999999', $options['query']['id']);
+            static::assertRegExp('#^\d{10}-[a-z0-9]{32}$#', $options['query']['key']);
+            static::assertSame('the api', $options['query']['api']);
+            static::assertSame('the method', $options['query']['method']);
+            static::assertSame('The name', $options['query']['query_name']);
+            static::assertSame('12345', $options['query']['query_tag1']);
+            static::assertSame('1', $options['query']['query_foo1']);
+            static::assertSame('0', $options['query']['query_foo2']);
+
             $body = '';
             while ('' !== $part = $options['body']()) {
                 $body .= $part;
             }
 
-            static::assertRegExp("/name=\"name\"[\r\n]+The name[\r\n]+--/", $body);
-            static::assertRegExp("/name=\"tag1\"[\r\n]+12345[\r\n]+--/", $body);
-            static::assertRegExp("/name=\"foo1\"[\r\n]+1[\r\n]+--/", $body);
-            static::assertRegExp("/name=\"foo2\"[\r\n]+0[\r\n]+--/", $body);
+            static::assertRegExp("/name=\"body_name\"[\r\n]+The name[\r\n]+--/", $body);
+            static::assertRegExp("/name=\"body_tag1\"[\r\n]+12345[\r\n]+--/", $body);
+            static::assertRegExp("/name=\"body_foo1\"[\r\n]+1[\r\n]+--/", $body);
+            static::assertRegExp("/name=\"body_foo2\"[\r\n]+0[\r\n]+--/", $body);
 
             $fieldsAllFound = true;
 
@@ -296,12 +305,22 @@ class HttpClientTest extends TestCase
             );
         });
 
-        $client->request('the api', 'the method', [
-            'name' => 'The name',
-            'tag1' => 12345,
-            'foo1' => true,
-            'foo2' => false,
-        ]);
+        $client->request(
+            'the api',
+            'the method',
+            [
+                'query_name' => 'The name',
+                'query_tag1' => 12345,
+                'query_foo1' => true,
+                'query_foo2' => false,
+              ],
+            [
+                'body_name' => 'The name',
+                'body_tag1' => 12345,
+                'body_foo1' => true,
+                'body_foo2' => false,
+            ]
+        );
 
         static::assertTrue($fieldsAllFound, 'Fields "name", "tag1", "foo1", and "foo2" were not all founds in the request body.');
     }
