@@ -82,7 +82,7 @@ class HttpClient implements HttpClientInterface
         $formData = new FormDataPart($body);
 
         $options = [
-            'query' => $query,
+            'query'   => $query,
             'headers' => $formData->getPreparedHeaders()->toArray(),
             'body'    => $formData->bodyToIterable(),
         ];
@@ -97,6 +97,11 @@ class HttpClient implements HttpClientInterface
         return $timeStamp.'-'.md5($this->accountId.$timeStamp.$this->secretKey);
     }
 
+    /**
+     * @param array<string,mixed> $parameters
+     *
+     * @return array<string,string>
+     */
     private function sanitizeParameters(array $parameters): array
     {
         return array_reduce(array_keys($parameters), static function (array $acc, string $fieldKey) use ($parameters) {
@@ -104,9 +109,9 @@ class HttpClient implements HttpClientInterface
 
             if (true === $fieldValue) {
                 $fieldValue = '1';
-            } else if (false === $fieldValue) {
+            } elseif (false === $fieldValue) {
                 $fieldValue = '0';
-            } else if (is_int($fieldValue)) {
+            } elseif (is_int($fieldValue)) {
                 $fieldValue = (string) $fieldValue;
             }
 
