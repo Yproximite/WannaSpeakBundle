@@ -41,10 +41,11 @@ class CallTrackings implements CallTrackingsInterface
         return $response->toArray(); // @phpstan-ignore-line
     }
 
-    public function modify(string $phoneDid, array $additionalArguments = []): array
+    public function modify(string $phoneDid, string $phoneDestination, array $additionalArguments = []): array
     {
         $arguments = array_merge($additionalArguments, [
-            'did' => $phoneDid,
+            'did'         => $phoneDid,
+            'destination' => $phoneDestination,
         ]);
 
         $response = $this->client->request(self::API, 'modify', $arguments);
@@ -63,11 +64,12 @@ class CallTrackings implements CallTrackingsInterface
         return $response->toArray(); // @phpstan-ignore-line
     }
 
-    public function expires(string $phoneDid, \DateTimeInterface $when, array $additionalArguments = []): array
+    public function expires(string $phoneDid, string $phoneDestination, \DateTimeInterface $when, array $additionalArguments = []): array
     {
         $arguments = array_merge($additionalArguments, [
-            'did'      => $phoneDid,
-            'stopdate' => $when->format('Y-m-d'),
+            'did'         => $phoneDid,
+            'destination' => $phoneDestination,
+            'stopdate'    => $when->format('Y-m-d'),
         ]);
 
         $response = $this->client->request(self::API, 'modify', $arguments);
