@@ -131,7 +131,7 @@ class CallTrackingsSpec extends ObjectBehavior
                 'did'         => '33176280XXX',
                 'destination' => '33474123XXX',
                 'stopdate'    => '2020-11-19',
-                'name'        => 'Expired number.',
+                'name'        => 'Expired number (33176280XXX).',
             ])
             ->shouldBeCalled()
             ->willReturn($response);

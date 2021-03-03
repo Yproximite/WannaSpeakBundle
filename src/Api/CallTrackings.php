@@ -70,7 +70,7 @@ class CallTrackings implements CallTrackingsInterface
             'did'         => $phoneDid,
             'destination' => $phoneDestination,
             'stopdate'    => $when->format('Y-m-d'),
-            'name'        => 'Expired number.',
+            'name'        => "Expired number ($phoneDid).",
         ]);
 
         $response = $this->client->request(self::API, 'modify', $arguments);
