@@ -45,7 +45,7 @@ class CallTrackings implements CallTrackingsInterface
     {
         $arguments = array_merge($additionalArguments, [
             'did'         => $phoneDid,
-            'destination' => $phoneDid,
+            'destination' => $phoneDestination,
         ]);
 
         $response = $this->client->request(self::API, 'modify', $arguments);
@@ -68,7 +68,7 @@ class CallTrackings implements CallTrackingsInterface
     {
         $arguments = array_merge($additionalArguments, [
             'did'         => $phoneDid,
-            'destination' => $phoneDid,
+            'destination' => $phoneDestination,
             'stopdate'    => $when->format('Y-m-d'),
         ]);
 
