@@ -168,7 +168,7 @@ class CallTrackingsTest extends TestCase
 
         static::assertSame(
             $responseData,
-            $callTrackings->modify('33176280XXX')
+            $callTrackings->modify('33176280XXX', '33474123XXX')
         );
     }
 
@@ -187,7 +187,7 @@ class CallTrackingsTest extends TestCase
             ))
         );
 
-        $callTrackings->modify('ABCDEF');
+        $callTrackings->modify('ABCDEF', '33474123XXX');
     }
 
     public function testDelete(): void
@@ -242,7 +242,7 @@ class CallTrackingsTest extends TestCase
 
         static::assertSame(
             $responseData,
-            $callTrackings->expires('33176280XXX', new \DateTime('2020-11-19'))
+            $callTrackings->expires('33176280XXX', '33474123XXX', new \DateTime('2020-11-19'))
         );
     }
 
@@ -261,6 +261,6 @@ class CallTrackingsTest extends TestCase
             ))
         );
 
-        $callTrackings->expires('ABCDEF', new \DateTime('2020-11-19'));
+        $callTrackings->expires('ABCDEF', '33474123XXX', new \DateTime('2020-11-19'));
     }
 }

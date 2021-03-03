@@ -98,14 +98,15 @@ class CallTrackingsSpec extends ObjectBehavior
     {
         $client
             ->request(CallTrackingsInterface::API, 'modify', [
-                'did'  => '33176280XXX',
-                'name' => 'My CallTracking',
+                'did'         => '33176280XXX',
+                'destination' => '33474123XXX',
+                'name'        => 'My CallTracking',
             ])
             ->shouldBeCalled()
             ->willReturn($response);
 
         $this
-            ->modify('33176280XXX', ['name' => 'My CallTracking'])
+            ->modify('33176280XXX', '33474123XXX', ['name' => 'My CallTracking'])
             ->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 
@@ -127,14 +128,15 @@ class CallTrackingsSpec extends ObjectBehavior
     {
         $client
             ->request(CallTrackingsInterface::API, 'modify', [
-                'did'      => '33176280XXX',
-                'stopdate' => '2020-11-19',
+                'did'         => '33176280XXX',
+                'destination' => '33474123XXX',
+                'stopdate'    => '2020-11-19',
             ])
             ->shouldBeCalled()
             ->willReturn($response);
 
         $this
-            ->expires('33176280XXX', new \DateTime('2020-11-19'))
+            ->expires('33176280XXX', '33474123XXX', new \DateTime('2020-11-19'))
             ->shouldBe(['error' => null, 'data' => [/* ... */]]);
     }
 }

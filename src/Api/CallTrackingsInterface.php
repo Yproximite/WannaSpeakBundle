@@ -31,7 +31,7 @@ interface CallTrackingsInterface
      *
      * @return array{ error: null, data: array{ ok: bool } }
      */
-    public function modify(string $phoneDid, array $additionalArguments = []): array;
+    public function modify(string $phoneDid, string $phoneDestination, array $additionalArguments = []): array;
 
     /**
      * @param array<string,mixed> $additionalArguments
@@ -45,5 +45,5 @@ interface CallTrackingsInterface
      *
      * @return array{ error: null, data: array{ ok: bool } }
      */
-    public function expires(string $phoneDid, \DateTimeInterface $dateTime, array $additionalArguments = []): array;
+    public function expires(string $phoneDid, string $phoneDestination, \DateTimeInterface $dateTime, array $additionalArguments = []): array;
 }
