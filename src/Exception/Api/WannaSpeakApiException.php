@@ -20,6 +20,8 @@ abstract class WannaSpeakApiException extends \RuntimeException implements Wanna
                 }
 
                 throw new AuthFailedException($statusCode, $message);
+            case 402:
+                throw new TimeErrorException($statusCode, $message);
             case 403:
                 throw new BadAccountException($statusCode, $message);
             case 404:
