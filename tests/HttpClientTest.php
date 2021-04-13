@@ -15,6 +15,7 @@ use Yproximite\WannaSpeakBundle\Exception\Api\MethodNotImplementedException;
 use Yproximite\WannaSpeakBundle\Exception\Api\MissingArgumentsException;
 use Yproximite\WannaSpeakBundle\Exception\Api\NoDidAvailableForRegionException;
 use Yproximite\WannaSpeakBundle\Exception\Api\SoundNameAlreadyExistsException;
+use Yproximite\WannaSpeakBundle\Exception\Api\TimeErrorException;
 use Yproximite\WannaSpeakBundle\Exception\Api\UnknownApiException;
 use Yproximite\WannaSpeakBundle\Exception\Api\UnknownException;
 use Yproximite\WannaSpeakBundle\Exception\Api\UnknownMethodException;
@@ -89,6 +90,22 @@ class HttpClientTest extends TestCase
                 'error' => [
                     'nb'  => 401,
                     'txt' => 'Name already Exists',
+                ],
+            ])
+        ));
+
+        $client->request('the api', 'the method');
+    }
+
+    public function testRequestWithCode402TimeError(): void
+    {
+        $this->expectException(TimeErrorException::class);
+
+        $client = $this->createHttpClient(new MockResponse(
+            (string) json_encode([
+                'error' => [
+                    'nb'  => 402,
+                    'txt' => 'Time error, more than UnixTimestamp NOW() 1618306219 +- 10s',
                 ],
             ])
         ));
