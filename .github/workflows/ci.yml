@@ -6,6 +6,10 @@ on:
             - master
     pull_request:
         types: [opened, synchronize, reopened, ready_for_review]
+    # Event "pull_request_target" is for Dependabot, since PR created by Dependabot are now treated as if they were opened from a fork.
+    # See: https://github.blog/changelog/2021-02-19-github-actions-workflows-triggered-by-dependabot-prs-will-run-with-read-only-permissions/
+    pull_request_target:
+        types: [opened, synchronize, reopened, ready_for_review]
 
 env:
     TZ: UTC
@@ -16,8 +20,21 @@ env:
 jobs:
     static_analysis:
         runs-on: ubuntu-latest
+        # If the PR is coming from a fork (pull_request_target), ensure it's opened by "dependabot[bot]".
+        # Otherwise, clone it normally.
+        if: |
+            (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]') ||
+            (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]')
         steps:
-            -   uses: actions/checkout@v2
+            - name: Checkout
+              if: ${{ github.event_name != 'pull_request_target' }}
+              uses: actions/checkout@v2
+
+            - name: Checkout PR
+              if: ${{ github.event_name == 'pull_request_target' }}
+              uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.event.pull_request.head.sha }}
 
             -   name: Install PHP
                 uses: shivammathur/setup-php@v1
@@ -39,6 +56,11 @@ jobs:
 
     test:
         runs-on: ubuntu-latest
+        # If the PR is coming from a fork (pull_request_target), ensure it's opened by "dependabot[bot]".
+        # Otherwise, clone it normally.
+        if: |
+            (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]') ||
+            (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]')
         strategy:
             fail-fast: false
             matrix:
@@ -72,7 +94,15 @@ jobs:
                         SYMFONY_VERSION: 5.1.*
 
         steps:
-            -   uses: actions/checkout@v2
+            - name: Checkout
+              if: ${{ github.event_name != 'pull_request_target' }}
+              uses: actions/checkout@v2
+
+            - name: Checkout PR
+              if: ${{ github.event_name == 'pull_request_target' }}
+              uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.event.pull_request.head.sha }}
 
             -   name: Install PHP
                 uses: shivammathur/setup-php@v1
@@ -97,3 +127,22 @@ jobs:
 
             -   name: Run PHPUnit
                 run: composer phpunit -- ${{ matrix.config.PHPUNIT_FLAGS }}
+
+    auto_merge:
+        runs-on: ubuntu-latest
+        needs: [static_analysis, test]
+        if: ${{ github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' }}
+        steps:
+            - name: Checkout
+              if: ${{ github.event_name != 'pull_request_target' }}
+              uses: actions/checkout@v2
+
+            - name: Checkout PR
+              if: ${{ github.event_name == 'pull_request_target' }}
+              uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.event.pull_request.head.sha }}
+
+            - uses: ahmadnassri/action-dependabot-auto-merge@v2
+              with:
+                  github-token: ${{ secrets.ACTION_DEPENDABOT_AUTO_MERGE_TOKEN }}

@@ -1,0 +1,23 @@
+version: 2
+registries:
+    composer-repository-repo-packagist-com:
+        type: composer-repository
+        url: https://repo.packagist.com
+        username: token
+        password: '${{secrets.COMPOSER_REPOSITORY_REPO_PACKAGIST_COM_PASSWORD}}'
+
+updates:
+    - package-ecosystem: composer
+      directory: '/'
+      schedule:
+          interval: monthly
+          time: '21:00'
+          timezone: Europe/Paris
+      open-pull-requests-limit: 99
+      registries:
+          - composer-repository-repo-packagist-com
+
+    - package-ecosystem: github-actions
+      directory: '/'
+      schedule:
+          interval: weekly
