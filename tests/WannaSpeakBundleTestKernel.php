@@ -6,6 +6,7 @@ namespace Yproximite\WannaSpeakBundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
@@ -29,7 +30,7 @@ abstract class AbstractWannaSpeakBundleTestKernel extends Kernel
         ];
     }
 
-    protected function configureContainer(ContainerBuilder $containerBuilder): void
+    protected function configureContainer(ContainerBuilder $containerBuilder, LoaderInterface $loader): void
     {
         $containerBuilder->loadFromExtension('framework', [
             'secret' => 'my-secret',
