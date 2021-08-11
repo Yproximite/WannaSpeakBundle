@@ -3,7 +3,7 @@
 Symfony bundle for the Wannaspeak API (http://fr.wannaspeak.com/)
 
 ![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/yproximite/wanna-speak-bundle)
-![](https://img.shields.io/badge/Symfony-%5E4.0%20%7C%7C%20%5E5.0-blue)
+![](https://img.shields.io/badge/Symfony-%5E4.4%20%7C%7C%20%5E5.3-blue)
 ![CI](https://github.com/Yproximite/WannaSpeakBundle/workflows/CI/badge.svg)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Yproximite/WannaSpeakBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Yproximite/WannaSpeakBundle/?branch=master)
 
