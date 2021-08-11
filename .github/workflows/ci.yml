@@ -70,10 +70,13 @@ jobs:
                         COMPOSER_FLAGS: --prefer-stable --prefer-lowest
                     -   PHP_VERSION: 7.4
                         COMPOSER_FLAGS: --prefer-stable --prefer-lowest
+                    -   PHP_VERSION: 8.0
+                        COMPOSER_FLAGS: --prefer-stable --prefer-lowest
 
                     # Test the latest stable release
                     -   PHP_VERSION: 7.3
                     -   PHP_VERSION: 7.4
+                    -   PHP_VERSION: 8.0
                         COVERAGE: true
                         PHPUNIT_FLAGS: -v --coverage-text
 
@@ -82,16 +85,15 @@ jobs:
                         SYMFONY_VERSION: 4.4.* # LTS
                     -   PHP_VERSION: 7.4
                         SYMFONY_VERSION: 4.4.* # LTS
+                    -   PHP_VERSION: 8.0
+                        SYMFONY_VERSION: 4.4.* # LTS
 
                     -   PHP_VERSION: 7.3
-                        SYMFONY_VERSION: 5.0.*
+                        SYMFONY_VERSION: 5.3.*
                     -   PHP_VERSION: 7.4
-                        SYMFONY_VERSION: 5.0.*
-
-                    -   PHP_VERSION: 7.3
-                        SYMFONY_VERSION: 5.1.*
-                    -   PHP_VERSION: 7.4
-                        SYMFONY_VERSION: 5.1.*
+                        SYMFONY_VERSION: 5.3.*
+                    -   PHP_VERSION: 8.0
+                        SYMFONY_VERSION: 5.3.*
 
         steps:
             - name: Checkout
