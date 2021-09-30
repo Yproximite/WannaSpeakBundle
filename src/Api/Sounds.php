@@ -18,9 +18,10 @@ class Sounds implements SoundsInterface
 
     public function list(array $additionalArguments = []): array
     {
-        $response = $this->client->request(self::API, 'list', $additionalArguments);
+        $response = $this->client->request(self::API, 'available', $additionalArguments);
 
-        return $response->toArray(); // @phpstan-ignore-line
+        /* @phpstan-ignore-next-line */
+        return $response->toArray();
     }
 
     public function upload($file, string $name, array $additionalArguments = []): array
