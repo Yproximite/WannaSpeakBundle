@@ -32,7 +32,7 @@ class SoundsSpec extends ObjectBehavior
     public function it_should_list(HttpClientInterface $client, ResponseInterface $response)
     {
         $client
-            ->request(SoundsInterface::API, 'list', [])
+            ->request(SoundsInterface::API, 'available', [])
             ->shouldBeCalled()
             ->willReturn($response);
 
